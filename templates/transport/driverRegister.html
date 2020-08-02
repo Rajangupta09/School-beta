@@ -1,0 +1,121 @@
+{% extends "dashboard/base.html" %}
+
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+{% crispy form.employeeForm form.employeeForm.helper %}
+
+{% load static %}
+{% block title %}
+Driver Register
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    <h3 class="text-center pb-2">Driver</h3>
+    <form action="{% url 'editDriver' empID=empID %}" method="POST" enctype="multipart/form-data">    
+        {% csrf_token %}
+        {% crispy form %}
+        {% crispy form.employeeForm %}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<div class="header container-fluid py-4 border-bottom border-dark text-center ">
+    <h1>Header</h1>
+  </div>
+  <div class="container-fluid text-center mt-2">
+    <h3>Sample Heading</h3>
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-sm-4">
+        <span class="font-weight-bold text-info">Name :</span> {{form.employee.firstName|capfirst}} {{form.employee.lastName|capfirst}}
+      </div>
+      <div class="col-sm-4">
+        <span class="font-weight-bold text-info">Gender :</span> {{form.employee.gender}}
+      </div>
+      <div class="col-sm-4">
+        <div class="container-fluid border border-dark p-5 w-50">
+          <div class="container p-5">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row marginTop">
+      <div class="col-sm-4"><span class="font-weight-bold text-info">DOB :</span> {{form.employee.dob}}</div>
+      <div class="col-sm-4">
+        <span class="font-weight-bold text-info">E-Mail :</span> {{form.employee.email}}
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-sm-4">
+        <span class="font-weight-bold text-info">Employee ID :</span> {{form.employee.empID}}
+      </div>
+      <div class="col-sm-4"><span class="font-weight-bold text-info"> Mobile Number : </span>{{form.employee.mobile_number}}
+      </div>
+    </div>
+    <div class="row mt-5">
+    {% if form.employee.joiningDate %}
+      <div class="col-sm-4"><span class="font-weight-bold text-info">Joining Date : </span> {{form.employee.joiningDate}}</div>
+    {% endif %}
+      <div class="col-sm-4"><span class="font-weight-bold text-info">Blood Group : </span> {{form.employee.bloodGroup}}</div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-sm-4"><span class="font-weight-bold text-info">Maritial Status :</span>{{form.employee.marital_status}}</div>
+      {% if form.employee.partnerName %}
+        <div class="col-sm-4"><span class="font-weight-bold text-info">Partner Name: </span> {{form.employee.partnerName}} </div>
+      {% endif %}
+       
+    </div>
+    <div class="row mt-5">
+      <div class="col-sm-10"><span class="font-weight-bold text-info">Address(Permanent):</span>{{form.employee.permanentAddress}}, {{form.employee.permanentAddress.city}},
+        {{form.employee.permanentAddress.state}}- {{form.employee.permanentAddress.zipCode}}</div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-sm-8"><span class="font-weight-bold text-info">Address(Current):</span>{{form.employee.currentAddress}}, {{form.employee.currentAddress.city}},
+          {{form.employee.currentAddress.state}}-{{form.employee.currentAddress.zipCode}}</div>
+      </div>
+    <div class="row mt-4">
+      <div class="col-sm-4"><span class="font-weight-bold text-info">Experience:</span> {{form.employee.experience}}</div>
+      <div class="col-sm-4"><span class="font-weight-bold text-info">Aadhar Number:</span> {{form.employee.aadharNumber}}
+      </div>
+      
+    </div>
+    <hr>
+    <div class="mt-2">
+    <hr>
+      <span class="font-weight-bold text-info">Driver Details :-</span>
+
+      <div class="row mt-4">
+        <div class="col-sm-4"><span class="font-weight-bold text-info">Current vehicle :</span> {{form.instance.vehicle.vehicle_no}}</div>
+        <div class="col-sm-4"><span class="font-weight-bold text-info">Batch number :</span> {{form.instance.batch_no}}</div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-4"><span class="font-weight-bold text-info"> License number :</span> {{form.instance.license_no}}</div>
+        <div class="col-sm-4 "><span class="font-weight-bold text-info"> Driver Id :</span> {% if form.instance.driverID %}<a href="{{form.instance.driverID.url}}">ID</a> {% else %}Not Provided{% endif %}</div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-4"><span class="font-weight-bold text-info"> Driver license : </span>  {% if form.instance.driverLicense %}<a href="{{form.instance.driverLicense.url}}">License</a> {% else %}Not Provided{% endif %}</div>
+      </div>
+      <hr>
+    </div>
+
+
+{% endblock content %}

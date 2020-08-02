@@ -1,0 +1,95 @@
+{% extends 'fees/fee_head_mapping_filter.html' %}
+{% load crispy_forms_tags %}
+{% load fees_tags %}
+
+{% block mapping %}
+    <br><br><br>
+    <h3 class='text-center'>Fee Head Mapping</h3>
+    <br><br>
+<!-- <div class="row no-gutters">-->
+<div class="col">
+    <form method="GET" style="display: inline; float: left;">
+        <div class="form-row">
+            <h5 class='form-group' class='text-center'>
+                {{ form.student_instance.firstName|capfirst }}
+                {{ form.student_instance.lastName|capfirst }} ({{ form.student_instance.classroom_student.classRoom }})
+            </h5>
+        </div>
+         <div class="leftside d-flex justify-content-left align-items-left">
+            <div class="form-group">
+                <label for="id_month">Month</label>
+                <select name="month" id='id_month' class='form-control'>
+                    <option value='Null' >-----</option>
+                    <option value='1' >January</option>
+                    <option value='2' >February</option>
+                    <option value='3' >March</option>
+                    <option value='4' >April</option>
+                    <option value='5' >May</option>
+                    <option value='6' >June</option>
+                    <option value='7' >July</option>
+                    <option value='8' >August</option>
+                    <option value='9' >September</option>
+                    <option value='10' >October</option>
+                    <option value='11' >November</option>
+                    <option value='12' >December</option>
+                </select>
+
+
+
+        <button class="btn btn-primary mt-3" type="submit">Submit</button>
+    </div>
+    </form>
+</div>
+</div>
+<div class="col">
+
+
+</div>
+    <div class="container ml-5 mr-5">
+    <div class="rightside d-flex justify-content-center align-items-center">
+
+
+    <form method="POST" style="display: inline; align-content: right;">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class='col' >
+                {% with form.fee_head_formset as formset %}
+                    {{formset.management_form}}
+                    {{ fromset.non_field_errors }}
+                    {{ fromset.errors }}
+                    {% for nested_form in formset %}
+                        {{ nested_form.errors }}
+                        {{ nested_form.non_field_errors }}
+                        {{ nested_form.amount.errors }}
+                        {{ nested_form.amount|as_crispy_field }}
+                        {% for hidden_field in nested_form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            <div class="col-md-3"></div>
+            <div class='col'>
+                {% with form.student_discount_formset as formset %}
+                    {{formset.management_form}}
+                    {{ fromset.non_field_errors }}
+                    {{ fromset.errors }}
+                    {% for nested_form in formset %}
+                        {{ nested_form.errors }}
+                        {{ nested_form.non_field_errors }}
+                        {{ nested_form.amount.errors }}
+                        {{ nested_form.amount|as_crispy_field }}
+                        {% for hidden_field in nested_form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
+                    {% endfor %}
+                {% endwith %}
+
+
+        <input type="submit" class='btn btn-primary' value="Submit">
+    </form>
+</div>
+    </div>
+ </div>
+</div>
+{% endblock mapping %}

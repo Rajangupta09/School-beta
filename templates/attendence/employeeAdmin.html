@@ -1,0 +1,129 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Student Attendence All
+{% endblock %}
+{% block content %}
+{% include "message.html" %}
+<style>
+.content{
+    padding: 0.5rem !important;
+    vertical-align:none;
+}
+.head{
+    font-weight:600;
+}
+.bg{
+    background-color:#bee5eb;
+}
+</style>
+    <form method="GET" class="row mt-4 ml-2">
+        <div class="form-group col-md-3">
+            <label for="">Select Year</label>
+            <select id="year" class="form-control" name="year"></select>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="">Select Month</label>
+            <select id="month" class="form-control" name="month">
+                <option value='1'>Janaury</option>
+                <option value='2'>February</option>
+                <option value='3'>March</option>
+                <option value='4'>April</option>
+                <option value='5'>May</option>
+                <option value='6'>June</option>
+                <option value='7'>July</option>
+                <option value='8'>August</option>
+                <option value='9'>September</option>
+                <option value='10'>October</option>
+                <option value='11'>November</option>
+                <option value='12'>December</option>
+            </select>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="">Employee Category</label>
+            <Select class="form-control" name="Category">
+            <option value="">--Category--</option>
+            <option value="teacher">Teacher</option>
+            <option value="driver">Driver</option>
+            <option value="peon">Peon</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="manager">Manager</option>
+            <option value="helper">Helper</option>
+            <option value="principal">Principal</option>
+            <option value="other">Other</option>
+            </select>
+        </div>
+           <button type="submit" class="btn btn-primary my-auto">Submit</button>
+        </form>
+
+{% if year %}
+    <div class="bg p-5">
+        <h4><b>Attendece Report :</b> {{month}}  {{year}}</h4>
+        <h5 class="pl-5">Present: <span class="text-primary"><b>P</b> </span>  Absent: <span class="text-danger"><b>A</b> </span>  Leave: <span class="text-warning"><b>L</b> </span>  Late: <span class="text-info"><b>F</b> </span>  Holiday: <span class="text-success"><b>H</b> </span></h5>
+    </div>
+{%if employees%}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered ml-3 mt-5">
+            <tr class="table-warning">
+                <th>Name</th>
+                <th>Employee ID</th>
+                <th class="content">P</th>
+                <th class="content">A</th>
+                <th class="content">L</th>
+                <th class="content">F</th>
+                <th class="content">H</th>
+                <th class="content">%</th>
+                {% for i in days %}
+                {% cycle 'SUN' 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' as weekday %}
+                    {% if i != 0%}
+                        <th class="content head">{{i}}<br>{{weekday}}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% for key,value in employees.items%}
+            <tr>
+                <th class="text-secondary">{{ value.name }}</th>
+                <th class="text-secondary">{{  key }}</th>
+                <th class="text-primary">{{ value.present | length}}</th>
+                <th class="text-danger">{{ value.absent | length}}</th>
+                <th class="text-warning">{{ value.leave | length}}</th>
+                <th class="text-info">{{ value.late | length}}</th>
+                <th class="text-success">{{holidays|length}}</td>
+                <th>{{value.total}}%</td>
+                {% for day in days %}
+                    {% if day != 0%}
+                        {% if day in value.present%}
+                            <th class="text-primary">P</th>
+                        {% elif day in value.absent%}
+                            <th class="text-danger">A</th>
+                        {% elif day in value.leave%}
+                            <th class="text-warning">L</th>
+                        {% elif day in value.late%}
+                            <th class="text-info">F</th>
+                        {% elif day in holidays%}
+                            <th class="text-success">H</th>
+                        {% else %}
+                            <th>-</th>
+                        {%endif%}
+                    {%endif%}
+                {% endfor %}
+            </tr>
+        {% endfor%}
+        </table>
+    </div>
+    {% else %}
+        <div class="mx-auto mt-5"><h5 class="text-center"><b>{{employee}}</b></h5></div>
+    {%endif%}
+
+{% endif %}
+
+<script>
+    var start = 2019;
+    var end = new Date().getFullYear();
+    var options = "";
+    for (var year = start; year <= end; year++) {
+        options += `<option value = '${year}'>` + year + "</option>";
+    }
+    document.getElementById("year").innerHTML = options;
+</script>
+{% endblock %}

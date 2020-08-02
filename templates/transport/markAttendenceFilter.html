@@ -1,0 +1,76 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Mark Attendence
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    {% block style %}{% endblock style %}
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+<div class="container">
+    <h2 class="text-center mt-3 ">Mark Attendence By Route</h2>
+
+    <form method="POST" action="{% url 'markRouteAttendenceFilter' %}?next={{ request.path }}" >
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label class="pr-1" for="">Routes:</label>
+                <select name="route_code" class="form-control mr-2">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for route in routes %}
+                    <option value='{{ route.routeID }}'>{{ route.route_code }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="pr-1" for="">Shifts:</label>
+                <select name="shifts" class="form-control mr-2">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+</div>
+
+{% block attendence_list %}
+{% endblock attendence_list %}
+
+
+<script>
+    $(document).ready(function(){
+        $('select[name="route_code"]').change(function(event){
+            routeID = this.value
+            $.ajax({
+                type: "GET",
+                url: `/api/transport/routes/${routeID}/get_shifts`,
+                success: function (response) {
+                    let $input = $('select[name="shifts"]')
+                    $input.html('')
+                    response.forEach(function(shift){
+                        let shift_name = (shift.route_code_1 === null)? 'Afternoon' : 'Morning';
+                        $input.append(
+                            `<option value='${shift.id}'>${shift_name}</option>`
+                        )
+                    })
+                },  
+            });
+        })
+    })
+</script>
+
+{% endblock content %}

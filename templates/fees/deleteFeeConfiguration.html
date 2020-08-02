@@ -1,0 +1,33 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+Delete Fee Configuration
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    <form method="POST">
+        {% csrf_token %}
+        <h3 class="text-center mt-3">Are you sure you want to delete this configuration</h3>
+        <button class="btn-danger btn">Yes</button>
+        <a href="{% url 'feeConfigurations' %}" class="btn-primary btn">Cancel</a>
+    </form>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Search Student
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+
+
+<div class="container-fluid">
+<table class="mb-5 table table-secondary table-striped">
+{% for student in students %}
+{% if student.is_deleted == True%}
+    <thead>
+      <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Mobile Number</th>
+            <th scope="col">Class Section</th>
+            <th scope="col">DOB</th>
+            <th scope="col">Admission Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">{{ student.fullName}}</th>
+            <td>{{ student.gender }}</td>
+            <td>{{ student.mobileNumber }}</td>
+            <td>{{ student.classSection }}</td>
+            <td>{{ student.dob }}</td>
+            <td>{{ student.admissionNumber }}</td>
+            <td><a href="{% url 'spermanentdelete' student.admissionNumber %}"><button class="btn btn-danger"><i class="fa fa-trash"></i>  Permanently Delete</button></a>   <a href="{% url 'srestore' student.admissionNumber %}"><button class="btn btn-success"><i class="fa fa-recycle"></i>  Restore Account</button></a></td>
+        </tr>
+    </tbody>
+{% endif %}
+{% endfor %}
+
+</table>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,136 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Newsletter
+{% endblock %}
+{% block content %}
+<style>
+span.fa{
+    font-size:18px;
+}
+.checked{
+    color:orange;
+}
+</style>
+{% include "message.html" %}
+  <div class="container-fluid">
+    <h2 class="text-center mt-3" >Add Newsletter</h2>
+    <form action="{% url 'addNewsletter' %}" method="GET" onsubmit="prepareDiv()">
+      <div class="form-group">
+        <!-- <label for="">Add Newsletter</label> -->
+        <input type="hidden" class="form-control" name="description" id="hidden_input" aria-describedby="helpId" placeholder="">
+      </div>
+      <div class="toolbar">
+        <a href="#" data-command='undo'><i class='fa fa-undo'></i></a>
+        <a href="#" data-command='redo'><i class='fa fa-redo'></i></a>
+
+
+        <a href="#" data-command='bold'><i class='fa fa-bold'></i></a>
+        <a href="#" data-command='italic'><i class='fa fa-italic'></i></a>
+        <a href="#" data-command='underline'><i class='fa fa-underline'></i></a>
+        <a href="#" data-command='strikeThrough'><i class='fa fa-strikethrough'></i></a>
+        <a href="#" data-command='justifyLeft'><i class='fa fa-align-left'></i></a>
+        <a href="#" data-command='justifyCenter'><i class='fa fa-align-center'></i></a>
+        <a href="#" data-command='justifyRight'><i class='fa fa-align-right'></i></a>
+        <a href="#" data-command='justifyFull'><i class='fa fa-align-justify'></i></a>
+        <a href="#" data-command='indent'><i class='fa fa-indent'></i></a>
+        <a href="#" data-command='outdent'><i class='fa fa-outdent'></i></a>
+        <a href="#" data-command='insertUnorderedList'><i class='fa fa-list-ul'></i></a>
+        <a href="#" data-command='insertOrderedList'><i class='fa fa-list-ol'></i></a>
+        <a href="#" data-command='h1'>h1</a>
+        <a href="#" data-command='h2'>h2</a>
+        <a href="#" data-command='createlink'><i class='fa fa-link'></i></a>
+        <a href="#" data-command='unlink'><i class='fa fa-unlink'></i></a>
+        <a href="#" data-command='p'>P</a>
+        <a href="#" data-command='subscript'><i class='fa fa-subscript'></i></a>
+        <a href="#" data-command='superscript'><i class='fa fa-superscript'></i></a>
+      </div>
+      <div id='editor' contenteditable>
+       
+      </div>
+      
+      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+  </div>
+
+  {% if news %}
+    <div class="container-fluid border border-top border-bottom border-success text-center py-3 my-5">
+      <h4><i class="far fa-newspaper mr-1"></i><strong>Newsletter's:</strong><hr></h4>
+      {% for n in news %}
+      <div class="">
+        <sup><span class="float-right">{{n.date}}</span></sup>
+        <sup class="float-right mr-5 pr-5">
+          <span class="mr-2 fa fa-star{% if n.star %} checked{% endif %}" data-id="{{n.id}}"></span>
+          <span class="ml-2 fa fa-trash" data-id="{{n.id}}"></span>
+        </sup>
+        <div data-id="{{n.id}}">{{n.description|safe}}
+      </div>
+      <hr>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+
+
+  <script>
+    function prepareDiv() {
+      document.getElementById("hidden_input").value = document.getElementById("editor").innerHTML;
+  }
+    $('.toolbar a').click(function (e) {
+      var command = $(this).data('command');
+      if (command == 'h1' || command == 'h2' || command == 'p') {
+        document.execCommand('formatBlock', false, command);
+      }
+      if (command == 'forecolor' || command == 'backcolor') {
+        document.execCommand($(this).data('command'), false, $(this).data('value'));
+      }
+      if (command == 'createlink' || command == 'insertimage') {
+        url = prompt('Enter the link here: ', 'http:\/\/');
+        document.execCommand($(this).data('command'), false, url);
+      } else document.execCommand($(this).data('command'), false, null);
+    });
+    const dd = document.getElementsByClassName('fa-star');
+
+    Array.from(dd).forEach(element => {
+      element.addEventListener('click', () => {
+        if (element.classList.contains('checked')){
+            Star(element.dataset.id, 'False');
+            element.classList.remove('checked');
+        }else{
+            val = Star(element.dataset.id, 'True');
+            element.classList.toggle('checked');
+        }
+      });
+    });
+
+    const del = document.getElementsByClassName('fa-trash');
+
+    Array.from(del).forEach(element => {
+      element.addEventListener('click', () => {
+        Star(element.dataset.id, 'delete');
+        let selector = 'div[data-id = ' + element.dataset.id + ']';
+        $(selector).html('<s>' + $(selector).html() + '</s>');
+      });
+    });
+
+    function Star(id, value){
+      if (value == 'delete'){
+        confirm('Are you sure you want to delete:');
+      }
+        $.ajax({
+            type: 'GET',
+            url: '/newsletter/',
+            data: {
+                star : value,
+                id : id
+            },
+            success:function(){
+            },
+            error:function(error){
+                alert("could not delete!");
+            }
+        })
+    };
+
+  </script>
+{% endblock %}

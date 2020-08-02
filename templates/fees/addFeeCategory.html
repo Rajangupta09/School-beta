@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Add Fee Category
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<div class="container w-75">
+<br>
+<br>
+    <h3 class="text-center">Fee Category</h3>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+      {% if form.instance.id %}
+        <a href="{% url 'deleteFeeCategory' pk=form.instance.pk %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+    </form>
+
+    
+    {% if object_list %}
+      <br><br>
+      <h3 class="text-center">Fee Categories</h3>
+      <br><br>
+      <table class="mb-5 table table-striped">
+        <tbody>
+          <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Deduction order</th>
+              <th scope="col">Submission order</th>
+              <th scope="col">Actions</th>
+          </tr>
+        {% for category in object_list %}      
+          {% url 'editFeeCategory' pk=category.pk as editURL %}
+          {% url 'deleteFeeCategory' pk=category.pk as deleteURL %}
+          <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.deduction_order }}</td>
+            <td>{{ category.submission_mode|capfirst }}</td>
+            <td>
+              <a class="badge badge-warning py-2 px-3" href="{{ editURL }}">Edit</a>
+              <a class="badge badge-danger py-2 px-3" href="{{ deleteURL }}">Delete</a>
+            </td>
+            
+          </tr>
+      {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+
+{% endblock content %}

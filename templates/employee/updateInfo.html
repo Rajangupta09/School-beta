@@ -1,0 +1,392 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+
+Update Info
+{% endblock %}
+{% block content %}
+{% load static %}
+{% include "message.html" %}
+
+
+<style>
+    #teacher , #othersss{
+    display: none;
+    }
+    #update{
+        display: block;
+    }
+    span.red{
+        color:red;
+    }
+</style>
+<style>
+/* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+    #update-form{
+        display: none;
+    }
+    /* Firefox */
+    input[type=number] {
+    -moz-appearance:textfield;
+    }
+    #second{
+        display:none;
+    }
+</style>
+<div class="container-fluid" id="first">
+    <form class="container w-75" id="myForm" method="POST" action={% url 'updateEmpInfo' %}>
+    {% csrf_token %}
+        <h3 class="my-2 text-info ">Update Employee Details</h3>
+        <div class="form-row">
+            <div class="form-group w-50">
+                <label for="username" class="font-weight-bold">EmpID of Employee to Update</label>
+                <input type="number" min="0"class="form-control" id="empID" name="empID" value={{employee.empID}} required>
+            </div>
+            <div class="form-group">
+            <button type="button" class="btn btn-primary" style="margin-top:33px;margin-left:10px;" id="filter">Filter</button>
+            </div>
+        </div>
+        
+    <div id="update-form">
+        <hr>
+        <div id="update">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="username"><b>First Name:</b><span class="red">*</span></label>
+                    <input type="text" class="form-control" id="firstname" aria-describedby="emailHelp" name="firstname" value={{employee.firstName}}>          
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Last Name:</label>
+                    <input type="text" class="form-control" id="lastname" aria-describedby="emailHelp" name="lastname" value={{employee.lastName}}>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for="gender">Gender:</label>
+                    <select name="gender" class="form-control mr-2" id="gender" value={{employee.gender}}>
+                        <option value="">Select</option>
+                        {% if employee.gender == 'Male' %}
+                        <option selected="true" value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        {% if employee.gender == 'Female' %}
+                        <option value="Male">Male</option>
+                        <option  selected="true" value="Female">Female</option>
+                        {% endif %}
+                        {% else %}
+                        <option value="Male">Male</option>
+                        <option  value="Female">Female</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+                <div class="form-group col-md-3">
+                    <label for="username">DOB:</label>
+                    <input type="date" class="form-control" id="DOB" aria-describedby="" name="DOB" value={{dob}}>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username"><b>Email:</b><span class="red">*</span></label>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" value={{employee.email}} required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Joining Date:</label>
+                    <input type="date" class="form-control" id="joinDate" aria-describedby="" name="joinDate" value={{employee.joiningDate}}>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Phone Number:</label>
+                    <input min="0" type="number" class="form-control" id="phone_number" name="phone_number" value={{employee.mobile_number}} onwheel="this.blur()">
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+                <div class="form-group col-md-4">
+                    <label for="username">Blood Group:</label>
+                    <select class="form-control" value={{employee.bloodGroup}} name="blood_group" id="blood_group">
+                    {% if employee.bloodGroup %}
+                    <option selected value="{{employee.bloodGroup}}">{{employee.bloodGroup}}</option>
+                    {% else %}
+                    <option selected value="">Select</option>
+                    {% endif %}
+                    <option value="O-">O-</option>
+                    <option value="O+">O+</option>
+                    <option value="A-">A-</option>
+                    <option value="A+">A+</option>
+                    <option value="B-">B-</option>
+                    <option value="B+">B+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="AB+">AB+</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="username">Maritial Status:</label>
+                    <input type="text" class="form-control" id="marital_status" name="marital_status" value={{employee.marital_status}}>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="caste">Experience:</label>
+                    <input type="text" class="form-control" id="experience" name="experience" value={{employee.experience}}>
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+                <div class="form-group col-md-4">
+                    <label for="username">Father Name:</label>
+                    <input type="text" class="form-control" id="fatherName" name="father_name" value={{employee.father_name}}>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="username">Mother Name:</label>
+                    <input type="text" class="form-control" id="motherName" name="mother_name" value={{employee.mother_name}}>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="caste">Wife/Husband Name:</label>
+                    <input type="text" class="form-control" id="partnerName" name="partnerName" value={{employee.partnerName}}>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputAddress">Current Address</label>
+                    <input type="text" class="form-control" id="inputAddress" name="currentinputAddress" placeholder="" value = {{cAdd.Address1}} required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputAddress2">Current Address 2</label>
+                    <input type="text" class="form-control" id="inputAddress2" name="currentinputAddress2"  placeholder="" value = {{cAdd.Address2}}>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-5">
+                    <label for="inputCity">State</label>
+                    <input type="hidden" id="cstate" value="{{cAdd.state}}">
+                    <select  name="inputState" id="state" class="form-control" data-city="city" required>
+                        {% if cAdd.state %}
+                        <option value="{{cAdd.state}}" selected>{{cAdd.state}}</option>
+                        {% else %}
+                        {% endif %}
+                    </select>
+                    {{cAdd.state}}
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="required" for="inputCity"><b>City:</b></label>
+                    <select  name="inputCity" id="city" class="form-control" required>
+                        {% if cAdd.city %}
+                        <option value="{{cAdd.city}}" selected>{{cAdd.city}}</option>
+                        {% endif %}
+                    </select>        
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Pin Code</label>
+                    <input type="text" class="form-control" id="inputZip" name="inputZip" value ={{cAdd.zipCode}} required>
+                </div>
+            </div>
+            <hr>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="preminputAddress">Permanent Address</label>
+                    <input type="text" class="form-control" id="perminputAddress" name="perminputAddress" placeholder="" value = {{pAdd.Address1}} required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="preminputAddress2">Permanent Address 2</label>
+                    <input type="text" class="form-control" id="perminputAddress2"  name="perminputAddress2" placeholder="" value = {{pAdd.Address2}}>
+                </div>
+            </div>
+
+            <div class="form-row">
+            
+                <div class="form-group col-md-5">
+                    <label for="inputState">State</label>
+                    <select  name="perminputState" required  id="permanentstate" data-city="permanentcity" class="form-control" required>
+                        {% if pAdd.state %}
+                        <option value="{{pAdd.state}}" selected>{{pAdd.state}}</option>
+                        {% else %}
+                        <option value="{{pAdd.state}}" selected>{{pAdd.state}}</option>
+
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group col-md-5">
+                    <label for="inputCity">City</label>
+                    <select class="form-control" id="permanentcity" name="perminputCity"required >
+                    {% if pAdd.city %}
+                    <option value="{{pAdd.city}}" selected>{{pAdd.city}}</option>
+                    {% endif %}
+                </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Pin Code</label>
+                    <input type="text" class="form-control" id="perminputZip" name="perminputZip" value = {{pAdd.zipCode}} required>
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+                <div class="form-group col-md-5">
+                    <input type="hidden" id="category" value="{{employee.empCategory}}">
+                    <label class="pr-1" for="exampleFormControlSelect2">Employee Category:</label>
+                    <select onchange="teacherOption()" name="empCategory" class="form-control mr-2" id="empCategory">
+                        <option value="teacher">Teacher</option>
+                        <option value="driver">Driver</option>
+                        <option value="peon">Peon</option>
+                        <option value="receptionist">Receptionist</option>
+                        <option value="coordinator">Coordinator</option>
+                        <option value="manager">Manager</option>
+                        <option value="helper">Helper</option>
+                        <option value="principal">Principal</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4 " id="othersss">
+                    <label for="other_input">Other:</label>
+                    <input type="text" class="form-control" id="other_input" name="other">
+                </div>            
+                <div class="form-group col-md-5">
+                    <label for="anumber">Aadhar Number:</label>
+                    <input type="number" class="form-control" id="a_number" name="a_number" onwheel="this.blur()" value={{employee.aadharNumber}} requiired>
+                </div>
+            </div>
+
+            <div id="teacher">
+                <h3 class="my-4 text-info border-top border-dark pt-4 ">Teacher Details </h3>
+
+                <div class="form-row mt-3 ">
+                    <div class="form-group col-md-4">
+                        <label for="username">Designation:</label>
+                        <input type="text" class="form-control" id="designation" name="designation" value={{teacher.designation}}>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="username">Specialization:</label>
+                        <input type="text" class="form-control" id="specialization" name="specialization" value={{teacher.specialization}}>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="username">Class Teacher:</label>
+                        <input type="text" class="form-control" id="classTeacher" name="classTeacher" value={{teacher.classTeacher}}>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row justify-content-around">
+            <button id="next" class="col-4 mt-5 container btn btn-primary">Submit</button>
+        </div>
+    </div>
+    </form>
+</div>
+
+<div class="container" id="second">
+    <label for="username"  class="new">Last Name : {{employee.lastName}}</label>
+    <button type="submit" id="submit" class="btn btn-info">Submit</button>
+</div>
+
+
+
+        <script src="{% static 'js/employform.js' %}"></script>
+
+        <script>
+            let view = new Array("#firstname", "#lastname", "#gender", "#DOB", "#email", "#joinDate", "#phone_number", "#blood_group", "#marital_status", "#experience", "#fatherName", "#motherName", "#partnerName", "#inputAddress", "#inputAddress2", "#state", "#city", "#inputZip", "#perminputAddress", "#perminputAddress2", "#permanentstate", "#permanentcity", "#perminputZip", "#empCategory", "#other_input", "#a_number");
+                $("#next").on("click",function(e){
+                    e.preventDefault();
+                    $("#first").fadeOut();
+                    $("#second").fadeIn();
+                    let temp ="<br>";
+                    for(i=0;i<view.length;i++){
+                    temp += view[i] + " : " + $(view[i]).val() + "<br /><br />";
+                    }
+                    $('label.new').html(temp);
+                });
+                $("#submit").on("click",function(e){
+                   $('#myForm').submit();
+                })
+
+
+                $(window).on("load",function(){
+                    $('#empCategory').val($('#category').val());
+
+                    if($('#empCategory').val() == 'teacher'){
+                        $('#teacher').css({'display' : 'block'});
+                    }
+                    else if($('#empCategory').val() == 'other'){
+                        $('#othersss').css({'display' : 'block'});
+                    }
+                    else if($('#pcategory').val() == 'teacher'){
+                        $('#pteacher').css({'display' : 'block'});
+                    }
+                    else{
+                        $('#teacher').css({'display' : 'none'});
+                        $('#othersss').css({'display' : 'none'});
+                    }
+                });
+
+                function teacherOption(){
+                    inputSelect = document.getElementById('empCategory')
+                    teacherDiv = document.getElementById('teacher')
+                    otherDiv = document.getElementById('othersss')
+                    if (inputSelect.value == "teacher"){
+                        teacherDiv.style.display = "block"
+                        otherDiv.style.display = "none"
+                    }
+                    else if (inputSelect.value == "other"){
+                        otherDiv.style.display = "block"
+                        teacherDiv.style.display = "none"
+                    }
+                    else{
+                        otherDiv.style.display = "none"
+                        teacherDiv.style.display = "none"
+                    }
+
+                }
+                $('#filter').on('click',function(e) {
+                    if($('#empID').val() == ''){
+                    alert("Enter Employee ID");
+                    $('#update').hide();
+
+                    }else{
+                    let url = `https://jdmrschoolerp.herokuapp.com/empForm/update/${$('#empID').val()}`
+                    window.location = url;
+
+
+                    }
+                });
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

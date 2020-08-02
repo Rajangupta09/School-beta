@@ -1,0 +1,215 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Notice Class
+{% endblock %}
+{% block content %}
+<style>
+#employee-attendence{
+    display:none;
+}
+#holidayDiv{
+    display: none;
+}
+#spinner{
+    text-align:center;
+    margin-top: 200px;
+}
+#holidayIcon{
+    color: #37a591;
+}
+</style>
+{% include "message.html" %}
+<div class="container">
+    <h2 class="text-center mt-2">Mark Employee Attendence</h2>
+    <form class="row" method="GET" action="{% url 'attendenceEmployee' %}">
+        <div class="form-group col-4">
+            <label for=""> EmpID Number</label>
+            <input type="text" class="form-control" name="emp_id" id="" aria-describedby="helpId" placeholder="">
+            <small id="helpId" class="form-text text-muted">Marks Attendence By EmpID Number</small>
+        </div>
+        <div class="form-group col-4">
+            <label for="">Name</label>
+            <input type="text" class="form-control" name="teacher_name" id="" aria-describedby="helpId" placeholder="">
+            <small id="helpId" class="form-text text-muted">Marks Attendence by Name</small>
+        </div>
+        <div class="form-group col-4">
+            <label for="">Employee Category</label>
+            <Select class="form-control" name="Category">
+            <option value="">--Category--</option>
+            <option value="teacher">Teacher</option>
+            <option value="driver">Driver</option>
+            <option value="peon">Peon</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="manager">Manager</option>
+            <option value="helper">Helper</option>
+            <option value="principal">Principal</option>
+            <option value="other">Other</option>
+            <option value="{{category}}">{{category}}</option>
+            </select>
+            <small id="helpId" class="form-text text-muted">Marks Attendence by Category</small>
+        </div>
+        <button type="submit" class="btn btn-primary my-auto">Submit</button>
+    </form>
+</div>
+
+{% if employee %}
+<div class="container-fluid">
+    <div id="employee-attendence">
+        <button class="btn btn-info float-right" id="holidayTrigger">Mark Holiday <i class="fa fa-plus"></i></button>
+        <form method="POST" id='holiday-form'>
+            {% csrf_token %}
+            <div class="form-group form-inline mx-auto col-md-4 col-sm-12 mt-5" id="holidayDiv">
+                <label for="date-from" class="font-weight-bold float-left">holiday  </label>            
+                <input type="date" class="form-control" id="holiday_Date" name="holidayDate">
+                <button class="btn" id="holidaySubmit" >  <i class="fa fa-plus" id="holidayIcon"></i>  </button>
+            </div>
+        </form>
+        <form method="POST">
+        {% csrf_token %}
+            <div class="form-group col-md-3 mt-3 mx-auto">
+                <label for="username" class="font-weight-bold">Select Date:</label>
+                <input type="date" class="form-control" id="date_" name="date">
+            </div>
+            <table class="mb-5 table table-secondary table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Emp ID</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employee %}
+                    <tr>
+                        <th scope="row">{{ emp.fullName}}</th>
+                        <td>{{ emp.empID }}</td>
+                        <td class="cat">{{ emp.empCategory }}</td>
+                        <td>
+                            <div class="form-check form-check-inline">
+
+                                <input class="form-check-input" type="radio" name={{emp.empID}} id=""
+                                    value="present">
+                                <label class="form-check-label">Present</label>
+                                <input class="form-check-input ml-2 " type="radio" name={{emp.empID}} id=""
+                                    value="absent">
+                                <label class="form-check-label">Absent</label>
+                                <input class="form-check-input ml-2" type="radio" name={{emp.empID}} id=""
+                                    value="leave">
+                                <label class="form-check-label">Leave</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+            <button type="submit" class="btn btn-primary my-2">Update Attendence</button>
+        </form>
+    </div>
+        <div id="spinner">
+            <div class="spinner-grow text-secondary" role="status"></div>
+            <div class="spinner-grow text-danger" role="status"></div>
+            <div class="spinner-grow text-secondary" role="status"></div>
+            <div class="spinner-grow text-warning" role="status"></div>
+        </div>
+</div>
+{% endif %}
+<script>
+
+    $(window).on("load", function(){
+        $('#spinner').css({'display' : 'block'});
+        setTimeout(function() {
+            $('#spinner').fadeOut();
+            $('#employee-attendence').fadeIn();
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth()+1; //January is 0!
+            let yyyy = today.getFullYear();
+            if(dd<10){dd='0'+dd} 
+            if(mm<10){mm='0'+mm} 
+            today = yyyy+'-'+mm+'-'+dd;     
+            $('#date_').val(today);
+            $('#date_').attr('disabled', 'True');
+        }, 2000);
+    });
+    $('#holidayTrigger').on('click', function(e){
+        e.preventDefault();
+        if($('#holidayDiv').css('display') == 'none'){
+            $('#holidayDiv').fadeIn();
+            $('#holidayTrigger').html('Mark Attendence  <i class="fa fa-window-close"></i>');
+            $('#holidayTrigger').removeClass('btn-info');
+            $('#holidayTrigger').addClass('btn-danger');
+    
+        }
+        else if($('#holidayDiv').css('display') == 'block'){
+            $('#holidayDiv').fadeOut();
+            $('#holidayTrigger').removeClass('btn-danger');
+            $('#holidayTrigger').addClass('btn-info');
+            $('#holidayTrigger').html('Mark Attendence  <i class="fa fa-plus"></i>');
+            
+        }
+    });
+    function checkDate(){
+      
+    };
+
+    $('#update_attendence').on('click', function(e){
+        e.preventDefault();
+        let d = new Date();
+        if (d.getDay() == 0){
+          alert("Selected Date is Sunday!")
+        }
+        let radios = document.querySelectorAll('input[type="radio"]');
+        let labels = document.querySelectorAll('label.form-check-label');
+        const radioconst = (radios.length) / 4;
+        let radioinst = 0;
+        for(i = 0; i < radios.length; i+=4){
+            if(radios[i].checked || radios[i+1].checked || radios[i+2].checked || radios[i+2].checked){
+                labels[i].style.color = "#212529";
+                labels[i + 1].style.color = "#212529";
+                labels[i + 2].style.color = "#212529";
+                labels[i + 3].style.color = "#212529";
+                radioinst++;
+            }
+            else{
+                labels[i].style.color = "red";
+                labels[i + 1].style.color = "red";
+                labels[i + 2].style.color = "red";
+                labels[i + 3].style.color = "red";
+            }
+        }
+        if(radioinst == radioconst) 
+            $('#attendenceForm').submit();
+        else
+            alert('Please Fill all students Attendence');
+    });
+
+    $('#holidaySubmit').on('click', function(e){
+        e.preventDefault();
+        $('#holidaySubmit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Mark Holiday');
+        if($('#holiday_Date').val() == ''){
+            $('#holidaySubmit').html('Mark Holiday');
+            alert("Enter a Date");
+        }else{
+            $.ajax({
+                type: 'POST',
+                url: '/holiday/',
+                data: {
+                    employee: 'employee',
+                    holiday: $('#holiday_Date').val(),
+                    Ecategory: $('.cat').html(),
+                    csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val() ,
+                },
+                success:function(data){
+                    $('#holidaySubmit').html('Mark Holiday');
+                    $('#holiday_Date').val('');
+                    alert('holiday marked Successfully!!');
+                }
+            })
+        $('#holidaySubmit').html('Mark Holiday');
+        }
+    });
+</script>
+{% endblock %}

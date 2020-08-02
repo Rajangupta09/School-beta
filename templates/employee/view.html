@@ -1,0 +1,156 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+
+Update Info
+{% endblock %}
+{% block content %}
+{% load static %}
+{% include "message.html" %}
+<style>
+label{
+    font-weight:700;
+}
+</style>
+<div class="container">
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label for="username">First Name : {{employee.firstName}}</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="username">Last Name : {{employee.lastName}}</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1" for="exampleFormControlSelect2">Gender : {{employee.gender}}</label>
+        </div>
+    </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-3">
+            <label for="username">DOB : {{dob}}</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="username">Email: {{employee.email}}</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="username">Joining Date: {{employee.joiningDate}}</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="username">Phone Number : {{employee.mobile_number}}</label>
+        </div>
+    </div>
+
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label for="username">Blood Group : {{employee.bloodGroup}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="username">Maritial Status : {{employee.marital_status}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="caste">Experience : {{employee.experience}}</label>
+        </div>
+    </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label for="username">Father Name : {{employee.father_name}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="username">Mother Name : {{employee.mother_name}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="caste">Wife/Husband Name : {{employee.partnerName}}</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputAddress">Current Address : {{cAdd.Address1}}</label>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputAddress2">Current Address 2 : {{cAdd.Address2}}</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="inputCity">State : {{cAdd.state}}</label>
+        </div>
+        <div class="form-group col-md-5">
+            <label class="required" for="inputCity">City : {{cAdd.city}}</label>    
+        </div>
+        <div class="form-group col-md-2">
+            <label for="inputZip">Pin Code : {{cAdd.zipCode}}</label>
+        </div>
+    </div>
+    <hr>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="preminputAddress">Permanent Address : {{pAdd.Address1}}</label>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="preminputAddress2">Permanent Address 2 : {{pAdd.Address2}}</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-5">
+            <label for="inputState">State : {{pAdd.state}}</label>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="inputCity">City : {{pAdd.city}}</label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="inputZip">Pin Code : {{pAdd.zipCode}}</label>
+        </div>
+    </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-5">
+        <input type="hidden" id="category" value="{{employee.empCategory}}">
+            <label class="pr-1" for="exampleFormControlSelect2">Employee Category : {{employee.empCategory}}</label>
+        </div>
+        <div class="form-group col-md-4 " id="othersss">
+            <label for="other_input">Other : {{employee.otherss}}</label>
+        </div>            
+        <div class="form-group col-md-5">
+            <label for="anumber">Aadhar Number : {{employee.aadharNumber}}</label>
+        </div>
+    </div>
+
+    <div id="teacher">
+    <h3 class="my-4 text-info border-top border-dark pt-4 ">Teacher Details </h3>
+
+    <div class="form-row mt-3 ">
+        <div class="form-group col-md-4">
+            <label for="username">Designation : {{teacher.designation}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="username">Specialization : {{teacher.specialization}}</label>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="username">Class Teacher : {{teacher.classTeacher}}</label>
+        </div>
+    </div>
+    </div>
+
+    <div class="form-row">
+    <a href="{% url 'updateEmpData' employee.empID %}"><button class="btn btn-warning"><i class="fa fa-pencil"></i> Edit</button></a>
+    <a href="{% url 'printEmpData' employee.empID %}"><button class="btn btn-success"><i class="fa fa-print"></i> Print</button></a>
+
+    </div>
+
+</div>
+
+    <script src="{% static 'js/employform.js' %}"></script>
+    <script>
+        $(window).on("load",function(){
+            $('#empCategory').val($('#category').val());
+
+            if($('#empCategory').val() == 'teacher'){
+                $('#teacher').css({'display' : 'block'});
+            }
+            if($('#empCategory').val() == 'other'){
+                $('#othersss').css({'display' : 'block'});
+            }
+            else{
+                $('#teacher').css({'display' : 'none'});
+                $('#othersss').css({'display' : 'none'});
+            }
+        });
+    </script>
+    {% endblock %}

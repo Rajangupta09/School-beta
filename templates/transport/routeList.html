@@ -1,0 +1,119 @@
+{% extends "dashboard/base.html" %} {% block title %} Driver List {% endblock %}
+{% block content %} {% include "message.html" %}
+
+<style>
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+</style>
+<div class="container-fluid">
+  <h2 class="text-center mt-3">Route List</h2>
+
+  <a class="btn btn-outline-primary btn-block mb-5 mt-5" href="{% url 'addRoute' %}"
+    >Add new route</a
+  >
+
+  {% for route in object_list %}
+      {% url 'editRoute' routeID=route.routeID  as editRouteURL %}
+      {% url 'archiveRoute' routeID=route.routeID as archiveRouteURL %}
+      {% url 'deleteRoute' routeID=route.routeID as deleteRouteURL %}
+
+      {% if route.morning_shift and not route.morning_shift.archived %}
+        {% url 'editShift' routeID=route.routeID detailID=route.morning_shift.id as editShiftURL %}        
+        {% url 'archiveShift' routeID=route.routeID detailID=route.morning_shift.id as archiveShiftURL %}
+        {% url 'deleteShift' routeID=route.routeID detailID=route.morning_shift.id as deleteShiftURL %}
+
+
+        {% include 'transport/pill.html' with text="Edit route" type="warning" url=editRouteURL %}
+        {% include 'transport/pill.html' with text="Edit shift" type="warning" url=editShiftURL %}
+        
+        {% with archiveRouteURL|add:'?next=routeList' as archiveRouteURL %}
+          {% include 'transport/pill.html' with text="Archive route" type="info" url=archiveRouteURL %}
+        {% endwith %}
+        {% with archiveShiftURL|add:'?next=routeList' as archiveShiftURL %}
+          {% include 'transport/pill.html' with text="Archive shift" type="info" url=archiveShiftURL %}
+        {% endwith %}
+        
+        
+        {% include 'transport/pill.html' with text="Delete route" type="danger" url=deleteRouteURL %}
+        {% include 'transport/pill.html' with text="Delete shift" type="danger" url=deleteShiftURL %}
+
+
+        <table class="mb-5 table table-secondary table-striped">
+        <tbody>
+          <tr>
+              <th scope="col">Route code</th>
+              <th scope="col">Sub route code</th>
+              <th scope="col">Start place</th>
+              <th scope="col">End place</th>
+              <th scope="col">Shift</th>
+              <th scope="col">Route distance</th>
+          </tr>
+          <tr>
+            <td>{{ route.route_code }}</td>
+            <td>{{ route.morning_shift.sub_route_code }}</td>
+            <td>{{ route.morning_shift.start_place }}</td>
+            <td>{{ route.morning_shift.end_place }}</td>
+            <td>{{ route.Shift.MORNING|capfirst }}</td>
+            <td>{{ route.morning_shift.route_distance }}</td>
+          </tr>
+        </tbody>
+      </table>
+      {% endif %}
+      {% if route.afternoon_shift and not route.afternoon_shift.archived %}
+        {% url 'editShift' routeID=route.routeID detailID=route.afternoon_shift.id as editShiftURL %}
+        {% url 'archiveShift' routeID=route.routeID detailID=route.afternoon_shift.id as archiveShiftURL %}
+        {% url 'deleteShift' routeID=route.routeID detailID=route.afternoon_shift.id as deleteShiftURL %}
+
+
+        {% include 'transport/pill.html' with text="Edit route" type="warning" url=editRouteURL %}
+        {% include 'transport/pill.html' with text="Edit shift" type="warning" url=editShiftURL %}
+        
+        {% with archiveRouteURL|add:'?next=routeList' as archiveRouteURL %}
+          {% include 'transport/pill.html' with text="Archive route" type="info" url=archiveRouteURL %}
+        {% endwith %}
+        {% with archiveShiftURL|add:'?next=routeList' as archiveShiftURL %}
+          {% include 'transport/pill.html' with text="Archive shift" type="info" url=archiveShiftURL %}
+        {% endwith %}
+        
+        {% include 'transport/pill.html' with text="Delete route" type="danger" url=deleteRouteURL %}
+        {% include 'transport/pill.html' with text="Delete shift" type="danger" url=deleteShiftURL %}
+        
+        
+        <table class="mb-5 table table-secondary table-striped">
+        <tbody>
+          <tr>
+            <th scope="col">Route code</th>
+            <th scope="col">Sub route code</th>
+            <th scope="col">Start place</th>
+            <th scope="col">End place</th>
+            <th scope="col">Shift</th>
+            <th scope="col">Route distance</th>
+          </tr>
+          <tr>
+            <tr>
+            <td>{{ route.route_code }}</td>
+            <td>{{ route.afternoon_shift.sub_route_code }}</td>
+            <td>{{ route.afternoon_shift.start_place }}</td>
+            <td>{{ route.afternoon_shift.end_place }}</td>
+            <td>{{ route.Shift.AFTERNOON|capfirst }}</td>
+            <td>{{ route.afternoon_shift.route_distance }}</td>
+          </tr>
+          </tr>
+        </tbody>
+      </table>
+      {% endif %}
+
+
+  {% endfor %}
+</div>
+
+{% endblock content %}

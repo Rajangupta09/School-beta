@@ -1,0 +1,304 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Past HomeWork
+{% endblock %}
+{% block content %}
+<style>
+#class, #teacher{
+    display:none;
+    position:absolute;
+}
+#classform, #teacherform{
+    cursor:pointer;
+    overflow:hidden;
+}
+.card-body{
+    height: 200px;
+    overflow: scroll;
+    z-index:999;
+}
+
+</style>
+{% include "message.html" %}
+
+<div class="container-fluid">
+    <h2 class="text-center my-3 ">HomeWork Details List</h2>
+
+  <form class="my-5 form-row" method="GET">
+        <div class="form-group col-md-3 ml-2">
+            <label class="pr-1" for="">Class/Section:</label>
+            <div class="form-control" id="classform">---Class/Section---</div>
+                <div class="card w-50" id="class">
+                <div class="card-body">
+                <input type="checkbox" id="all">
+                <label>Select All</label><br/>
+                {% for class_room in class_rooms %}
+                <input type="checkbox" value="{{class_room.classSection}}" name="class_room">
+                <label>{{class_room.classSection}}</label><br/>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1" for="">Teacher:</label>
+            <div class="form-control" id="teacherform">---Teacher---</div>
+                <div class="card w-50" id="teacher">
+                <div class="card-body">
+                <input type="checkbox" id="allt">
+                <label>Select All</label><br/>
+                {% for teacher in teachers %}
+                <input type="checkbox" value="{{teacher.pk}}" name="teachers" data-name="{{teacher.employee.fullName}}">
+                <label>{{teacher.employee.fullName}}</label><br/>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+         <div class="form-group col-md-3">
+            <label class="pr-1" for="">Date:</label>
+            <input type="date" class="form-control" name="date">
+        </div>
+        <div class="form-group col-md-2 p-4">
+            <button class="btn btn-success" type="submit">Search</button>
+        </div>
+    </form>
+
+    <ul class="nav nav-tabs nav-justified">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#home">Class Wise</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#teacherwise">Teacher Wise</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#datewise">Date Wise</a>
+    </li>
+    </ul>
+
+<div class="tab-content">
+{% if cw == True %}
+  <div class="tab-pane active" id="home">
+    <table class="mb-5 table table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Class</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if past_homeworks %}
+            {% regroup past_homeworks by classRoom.class_room as myList %}
+            {% for a in myList %}
+            <tr class="classs" data-id={{a.grouper.classSection}}>
+                <th scope="row">{{ a.grouper.classSection}}</th>
+                <td>
+                    <ul>
+                    {% for subject in a.list %}
+                        <li>{{ subject.classRoom.subject.name}}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td><ul>
+                {% for description in a.list %}
+                <li>{{description.description}}</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <h4 class="mt-5 text-center">No Homework to display...</h4>
+        {% endif %}
+        </tbody>
+    </table>
+  </div>
+{% endif %}
+
+{% if tw == True %}
+  <div class="tab-pane {% if not cw == True and not dw == True and tw == True %}show active{% endif %} fade" id="teacherwise">
+    <table class="mb-5 table table-striped table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Teacher</th>
+                <th scope="col">Class and Subject</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% regroup timetable by teacher as myList %}
+            {% for a in myList %}
+            <tr>
+                <th scope="row">{{ a.grouper.employee.fullName}}</th>
+                <td>
+                  <ul>
+                  {% for class in a.list %}
+                      <li>{{ class.class_room.classSection}} &nbsp; {{class.subject.name}}</li>
+                  {% endfor %}
+                  </ul>
+                </td>
+                <td><ul>
+                {% for s in a.list %}
+                    <li class="item" 
+                    {% for i in past_homeworks %}
+                        {% if s.class_room.classSection == i.classRoom.class_room.classSection and s.subject.name == i.classRoom.subject.name %}
+                            data-id="Submitted"
+                        {% endif %}
+                    {%endfor%}
+                    ></li>
+                {% endfor %}
+                </ul>
+                </td>
+            </trtoggle=>
+            {% endfor %}
+        </tbody>
+
+    </table>
+  </div>
+{% endif %}
+{% if dw == True %}
+  <div class="tab-pane {% if not cw == True and not tw == True and dw == True %}show active{% endif %} fade" id="datewise">
+    <table class="mb-5 table  table-striped table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Class and Subject</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% regroup past_homeworks by date_published.date as myList %}
+            {% for a in myList %}
+            <tr>
+                <th scope="row">{{ a.grouper}}</th>
+                <td>
+                  <ul>
+                  {% for cl in timetable%}
+                  <li class="csub"
+                    {% for class in a.list %}
+                        {% if class.classRoom.class_room.classSection == cl.class_room.classSection and cl.subject.name == class.classRoom.subject.name%}
+                        data-sub='Submitted'
+                      {%endif%}
+                  {% endfor %}
+                  >{{ cl.class_room.classSection}} &nbsp; {{cl.subject.name}}</li>
+                  {% endfor %}
+                  </ul>
+                </td>
+                <td>
+                    <ul>
+                    {% for cl in timetable%}
+                    <li>{{cl.teacher.employee.fullName}}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td><ul>
+                    {% for cl in timetable%}
+                        <li class="time">
+                        {% for s in a.list %}
+                            {% if s.classRoom.class_room.classSection == cl.class_room.classSection and cl.subject.name == s.classRoom.subject.name%}
+                                {{s.date_published.time}}&nbsp;
+                            {% endif %}
+                        {% endfor %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                </td>
+            </trtoggle=>
+            {% endfor %}
+        </tbody>
+
+    </table>
+  </div>
+  {% endif %}
+</div>
+<script>
+    $('#classform').on('click', function(){
+        $('#class').toggle();
+    });
+    $('#class').on('mouseleave', function(){
+        $('#class').hide();
+    });
+   $('#all').on('click', function(){
+        if($(this).is(":checked")){
+        $('input[name="class_room"]').prop('checked', true);
+        }else{
+        $('input[name="class_room"]').prop('checked', false);
+        }
+    })
+
+    $('#teacherform').on('click', function(){
+        $('#teacher').toggle();
+    });
+    $('#teacher').on('mouseleave', function(){
+        $('#teacher').hide();
+    });
+   $('#allt').on('click', function(){
+        if($(this).is(":checked")){
+        $('input[name="teachers"]').prop('checked', true);
+        }else{
+        $('input[name="teachers"]').prop('checked', false);
+        }
+    })
+    
+      $('input[type="checkbox"]').on('click', function(){
+            let val = '';
+            let val2= '';
+            $('input[name="class_room"]').each(function(){
+                if($(this).is(':checked')){
+                    val += this.value + ', ';
+                }
+                if (val != ''){
+                    $('#classform').html(val);
+                }else{
+                    $('#classform').html('----Class/Section----');
+                }
+            });
+            $('input[name="teachers"]').each(function(){
+                if($(this).is(':checked')){
+                    val2 += this.dataset.name + ', ';
+                }
+                if (val2 != ''){
+                    $('#teacherform').html(val2);
+                }else{
+                    $('#teacherform').html('----Teacher----');
+                }
+            });
+      });
+
+
+  const d = document.getElementsByClassName('item');
+    Array.from(d).forEach(element =>  {
+        var i = element.dataset.id;
+        if(i == 'Submitted'){
+            element.innerHTML = '<span class="text-success">Submitted</span>';
+        }else{
+            element.innerHTML = '<span class="text-primary">Not Submitted</span>';
+        }
+    });
+
+
+    const c = document.getElementsByClassName('csub');
+
+    Array.from(c).forEach(element =>  {
+        var i = element.dataset.sub;
+        if(i == 'Submitted'){
+            element.classList.add("text-success");
+        }else{
+            element.classList.add("text-info");
+        }
+    });
+    const t = document.getElementsByClassName('time');
+
+    Array.from(t).forEach(element =>  {
+        var i = element.innerHTML;
+        console.log(i.length);
+        if(i.length == 806){
+            element.innerHTML = '<span class="text-info">Not Submitted</span>';
+        }else{
+            element.classList.add("text-success");
+        }
+    });
+</script>
+{% endblock content %}

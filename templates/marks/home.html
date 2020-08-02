@@ -1,0 +1,167 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Marks Section
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+.data{
+    font-size:0.9rem;
+}
+</style>
+    <div class="container-fluid mt-3 border-bottom border-dark pb-2">
+        <div class="container w-75">
+            <h3 class="">Add Exam</h3>
+            <hr>
+            <form action="" id="add_exam_form" class="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="">Exam Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="" id="exam_name" aria-describedby="helpId" placeholder="Exam Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="">Description<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="" id="description" aria-describedby="helpId" placeholder="Description" required>
+                </div>
+                <button type="submit" class="btn btn-primary mb-4">Submit</button>
+            </form>
+        </div>
+    <div>
+    <table class="table table-striped data">
+        <thead>
+            <tr class="bg-dark text-white">
+                <th>Sr.No.</th>
+                <th>Exam Name</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tdata">
+            {% for exam in exams %}
+            <tr>
+                <td class="data-id">{{exam.id}}</td>
+                <td>{{exam.examName}}</td>
+                <td>{{exam.description}}</td>
+                <td><button class="btn btn-warning mr-3 data-edit" data-sub="{{exam.id}}"  data-toggle="modal" data-target="#edit"><i class="fa fa-notes-medical"></i> Edit </button><button class="btn btn-danger delete" data-sub="{{exam.id}}"><i class="fa fa-trash"></i> Delete</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+
+<div class="modal fade" id="edit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+            <div class="form-group">
+                <label for="">Exam Name<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="" id="mexam_name">
+            </div>
+            <div class="form-group">
+                <label for="">Description<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="" id="mdescription">
+            </div>
+            <div class="form-group float-right">
+            <button class="btn btn-success" id="edit">Save</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <script>
+        const btn = document.getElementsByClassName('data-edit');
+        Array.from(btn).forEach(element =>  {
+            element.addEventListener("click", function(){
+            var i = element.dataset.sub;
+            var x = element.parentElement.previousElementSibling.previousElementSibling;
+            var y = element.parentElement.previousElementSibling;
+            var name = x.innerHTML;
+            var desc = y.innerHTML;
+            document.getElementById('mexam_name').value = name;
+            document.getElementById('mexam_name').dataset.name = name;
+            document.getElementById('mdescription').value = desc;
+            document.getElementById('mdescription').dataset.desc = desc;
+            document.getElementById('mdescription').dataset.id = i;
+            /*
+            x.innerHTML = '<input class="form-control" name="name" value="'+ name +'" data-n = "'+ name +'">';
+            y.innerHTML = '<input class="form-control" name="desc" value="'+ desc +'" data-d = "'+ desc +'">';
+            element.parentElement.parentElement.classList.add('save');
+            element.parentElement.innerHTML = '<button class="btn btn-success" id="edit" onclick="edit('+ element.dataset.sub +')">Save</button>';
+            */})
+        });
+
+
+        const btnd = document.getElementsByClassName('delete');
+        Array.from(btnd).forEach(element =>  {
+            element.addEventListener("click", function(){
+            confirm('Are you sure you want to delete!');
+            var d = element.dataset.sub;
+            $.ajax({
+                type: 'GET',
+                url: '{% url 'addExamForm' %}',
+                data: {
+                    did: d,
+                },
+                success:function(){
+                    alert('Deleted Successfully');
+                },
+                error:function(err){
+                    alert('Could not delete');
+                }
+            })    
+        })
+        });
+
+    $('#edit').on('click', function(){
+        if($('#mexam_name').val() == $('#mexam_name').data('name') && $('#mdescription').val() == $('#mdescription').data('desc')){
+            alert('No changes detected!');
+            return;
+        }
+        $.ajax({
+            type: 'GET',
+            url: '{% url 'addExamForm' %}',
+            data: {
+                   name: $('#mexam_name').val(),
+                   desc: $('#mdescription').val(),
+                   id: $('#mdescription').data('id'),
+            },
+            success:function(){
+                alert('done');
+            },
+            error:function(err){
+                alert(err);
+            }
+        })
+    });
+
+        $(document).on('submit', '#add_exam_form', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'addExamForm' %}',
+                data: {
+                    exam_name: $('#exam_name').val(),
+                    description: $('#description').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+
+                },
+                success: function(e) {
+                    alert("Exam added!");
+                },
+                error: function() {
+                    alert("Fail");
+                }
+
+            })
+        });
+    </script>
+{% endblock %}

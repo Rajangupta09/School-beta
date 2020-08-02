@@ -1,0 +1,366 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+{% load static %}
+Add Student Info
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+
+
+<style type="text/css" media="print">
+    .no-print {
+        display: none;
+    }
+</style>
+<style>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+
+}
+.required::after {
+ content: "*";
+ color: red;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance:textfield;
+}
+#display-none{
+    display: none;
+}
+</style>
+<div class="container">
+    <form class="needs-validation" id="myForm" method="POST" novalidate>
+    {% csrf_token %}
+
+        <hr>
+        <h3 class="my-2 text-info ">Student Details</h3>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label class="required"><b>First Name:</b></label>
+                <input type="text" class="form-control" id="firstname ValidationCustom01"  name="firstname" required>
+                <div class="invalid-feedback">
+                    Please provide a valid name.
+                  </div>
+            </div>
+        
+            <div class="form-group col-md-4">
+                <label>Last Name:</label>
+                <input type="text" class="form-control" id="lastname"  name="lastname">
+            </div>
+          
+            <div class="form-group col-md-4">
+                <label class="pr-1">Gender:</label>
+                <select name="gender" class="form-control mr-2" id="exampleFormControlSelect2">
+                    <option selected value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row mt-2">
+            <div class="form-group col-md-3">
+                <label class="required"><b>Date Of Birth:</b></label>
+                <input type="date" class="form-control" id="sDOB"  name="sDOB" required>
+                <div class="invalid-feedback">
+                    Please Enter a valid Date.
+                  </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label class="required"><b>Class Section:</b></label>
+                <select name="classsection" class="form-control mr-2 required" id="exampleFormControlSelect2" required>
+                    <option selected value="">Select</option>
+                    {% for section in class_sections %}
+                      <option value="{{section}}">{{section}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div class="form-group col-md-3">
+                <label class="required"><b>Admission Number: </b></label>
+                <input type="number" class="form-control" id="addmissionnumber" value="{{pk_}}" name="addmissionnumber" onwheel="this.blur()" required>
+                <div class="invalid-feedback">
+                    Please provide a valid input.
+                  </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label class="required">Phone Number:</label>
+                <input min="0" type="text" maxlength="10" pattern="\d{10}" class="form-control" id="phonenumber" name="phonenumber" onwheel="this.blur()" required>
+                <div class="invalid-feedback">
+                    Please provide a valid input.
+                  </div>
+            </div>
+        </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label>Religion:</label>
+            <input type="text" class="form-control" id="religion" name="religion">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="caste">Caste:</label>
+            <input type="text" class="form-control" id="caste" name="caste">
+        </div>
+    </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-6">
+            <label class="required" for="inputAddress"><b>Current Address:</b></label>
+            <input type="text" class="form-control" id="inputAddress" name="currentinputAddress" placeholder="" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputAddress2">Current Address 2:</label>
+            <input type="text" class="form-control" id="inputAddress2" name="currentinputAddress2" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-row mt-2 ">
+       <div class="form-group col-md-4">
+            <label class="required" for="inputState"><b>State:</b></label>
+            <select name="inputState" id="state" class="form-control" data-city="city" required></select>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div> 
+         <div class="form-group col-md-6">
+            <label class="required" for="inputCity"><b>City:</b></label>
+            <select  name="inputCity" id="city" class="form-control" required></select>   
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>     
+        </div>
+       
+        <div class="form-group col-md-2">
+            <label class="required" for="inputZip"><b>Pin Code:</b></label>
+            <input type="number" class="form-control" id="inputZip" name="inputZip" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+
+<hr>
+    <div class="custom-control custom-checkbox my-2">
+        <input type="checkbox" class="custom-control-input" name="customCheck1" id="customCheck1">
+        <label class="custom-control-label font-italic font-weight-lighter" for="customCheck1"> Current Address is same as Permanent Address:</label>
+    </div>
+<hr>
+<div class="permanent">
+    <div class="form-row mt-2 ">
+        <div class="form-group col-md-6"> <label class="required" for="preminputAddress"><b>Permanent Address:</b></label>
+            <input type="text" class="form-control" id="perminputAddress"  name="perminputAddress" placeholder="" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="preminputAddress2">Permanent Address 2:</label>
+            <input type="text" class="form-control" id="perminputAddress2" name="perminputAddress2" placeholder="">
+        </div>
+    </div>
+
+    <div class="form-row mt-2">
+       <div class="form-group col-md-4">
+            <label class="required" for="inputState"><b>State:</b></label>
+            <select  class="form-control" name="perminputState" id="permanentstate" data-city="permanentcity" required></select>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div> 
+        <div class="form-group col-md-6">
+            <label class="required" for="inputCity"><b>City:</b></label>
+            <select class="form-control" id="permanentcity" name="perminputCity" required></select>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        
+        <div class="form-group col-md-2">
+            <label class="required" for="inputZip"><b>Pin Code:</b></label>
+            <input type="number" class="form-control" id="perminputZip" name="perminputZip" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label for="tcnumber">Transfer Certificate Number:</label>
+            <input type="number" class="form-control" id="tcnumber" name="tcnumber">
+        </div>
+        <div class="form-group col-md-4">
+            <label class="required" for="anumber"><b>Aadhar Number:</b></label>
+            <input type="number" class="form-control" id="anumber" name="anumber" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label for="feeCategory">Fee Waiver Category:</label>
+            <input type="text" class="form-control" id="feeCategory" name="feeCategory">
+          
+        </div>
+        <div class="form-group col-md-4">
+            <label for="prevschoolname">Previous School Name:</label>
+            <input type="text" class="form-control" id="prevschoolname" name="prevschoolname">
+        </div>
+        <div class="form-group col" id="sibling-div">
+            <label for="siblingid">Sibling ID:</label>
+            <button type="button" onclick="addSibling()" class="btn btn-outline-secondary btn-sm">Add Sibling</button>
+                    <button type="button" onclick="delSibling()" class="btn btn-outline-danger btn-sm" id="display-none">Delete Sibiling</button>
+            <input type="number" class="form-control" id="siblingid" min="0" name="siblingid">
+            
+        </div>
+
+    </div>
+
+    <div class="form-row mt-2">
+        <div class="form-group col-md-3">
+            <label class="pr-1" >Route Code:</label>
+            <select name="route_id" class="form-control mr-2" value="0" >
+                <option selected value="">Select</option>
+                {% for route in routes %}
+                <option value='{{ route.routeID }}'>{{ route.route_code }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <label class="pr-1" for="">Shift:</label>
+            <select name="shifts" class="form-control mr-2" id="">
+            </select>
+         
+        </div>
+        <div class="form-group col-md-4">
+            <label for="">Stoppage Name:</label>
+            <input type="text" class="form-control" name="stoppage_name">
+          
+        </div>
+    </div>
+    <h3 class="my-4 text-info border-top border-dark pt-4">Parent/Gaurdian Details </h3>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-3">
+            <label  class="required" for="fathername"><b>Father/Gaurdian Name:</b></label>
+            <input type="text" class="form-control" id="fathername"  name="fathername" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="mothername">Mother Name:</label>
+            <input type="text" class="form-control" id="mothername"  name="mothername">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Father DOB:</label>
+            <input type="date" class="form-control" id="fDOB"  name="fDOB">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Mother DOB:</label>
+            <input type="date" class="form-control" id="mDOB"  name="mDOB">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-md-3">
+            <label class="required"><b>Phone Number:</b></label>
+            <input min="0" type="text" class="form-control"  maxlength="10" pattern="\d{10}" id="phone_number" name="phone_number" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Alternate Phone Number:</label>
+            <input min="0" type="text" class="form-control"  maxlength="10" pattern="\d{10}" id="alt_phone_number" name="alt_phone_number">
+        </div>
+        <div class="form-group col-md-3">
+            <label class="required" for="prevschoolname"><b>E-Mail:</b></label>
+            <input type="email" class="form-control" aria-describedby="emailHelp" id="pemail" name="pemail" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-md-4">
+            <label for="mothername">Father/Guardian Qualification:</label>
+            <input type="text" class="form-control" id="g_qual"  name="g_qual">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+   <div class="form-group mb-5 col-md-5">
+            <label for="mothername">Mother Occuptation:</label>
+            <input type="text" class="form-control" id="m_occup"  name="m_occup">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        </div>
+
+       
+    </div>
+
+    <h3 class="my-4 text-info border-top border-dark pt-4">Documents</h3>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="photgraph">Photograph:</label>
+            <input onchange="ValidateSize(this)" type="file" class="form-control-file no-print " id="photgraph"
+                name="photgraph">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="idproof">ID Proof:</label>
+            <input onchange="ValidateSize(this)" type="file" class="form-control-file no-print " id="idproof"
+                name="idproof">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="castcert">Caste Certificate:</label>
+            <input onchange="ValidateSize(this)" type="file" class="form-control-file no-print " id="castcert"
+                name="castcert">
+        </div>
+    </div>
+
+    <div class="form-row mt-2">
+        <div class="form-group col-md-4">
+            <label for="domicile">Domicile:</label>
+            <input onchange="ValidateSize(this)" type="file" class="form-control-file no-print " id="domicile"
+                name="domicile">
+        </div>
+        <div class="form-group col-md-4">
+            <label onchange="ValidateSize(this)" for="tc">T.C:</label>
+            <input type="file" class="form-control-file" id="tc" name="tc">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="charcert">Character Certificate:</label>
+            <input onchange="ValidateSize(this)" type="file" class="form-control-file no-print " id="charcert"
+                name="charcert">
+        </div>
+    </div>
+
+    <div class="row justify-content-around">
+        <button type="submit" class="col-4 mt-5  container btn btn-primary">Submit</button>
+        <a href="{% url 'searchPage' %}" class="btn btn-primary col-4 mt-5"> Print </a>
+    </div>
+
+</form>
+</div>
+
+<script src="{% static 'js/recordForm.js' %}"></script>
+{% endblock %}

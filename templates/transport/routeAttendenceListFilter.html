@@ -1,0 +1,98 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Attendence List
+{% endblock %}
+{% block content %}
+
+
+{% include 'message.html' %}
+
+<style>
+.content{
+    padding: 0.5rem !important;
+    vertical-align:none;
+}
+.head{
+    font-weight:600;
+}
+.bg{
+    background-color:#bee5eb;
+}
+ @media print {
+    body {
+      font-size: 0.5rem;
+      margin: 0;
+      padding: 0;
+      /* change the margins as you want them to be. */
+    }
+    html, body {
+      height:110vh; 
+      overflow: hidden;
+    }
+    .btn{
+      display:none;
+    }
+    .form-main{
+        display:none;
+    }
+    nav{
+        display:none;
+    }
+    .table td, .table th{
+        padding:.4rem !important;
+    }
+    .bg-dark{
+        display:none !important;
+    }
+  }
+
+  @page {
+    size:auto;
+    margin: 0;
+    size: landscape;
+
+  }
+
+</style>
+<div class="container">
+    <h2 class="text-center mt-3 ">Route Attendence</h2>
+    <br>
+
+    <form action="{% url "routeAttendenceListFilter" %}?next={{request.path}}" method="POST">
+        {% csrf_token %}
+        <div class="form-row" id='filters'>
+            <div class="form-group col-md-4">
+                <label class="pr-1" for="">Routes:</label>
+                <select name="routeID" class="form-control mr-2">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for route in routes %}
+                        <option value='{{ route.routeID }}'>{{ route.route_code }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="time-filter form-group col-md-4">
+                <label class="pr-1" for="student_id">Select student:</label>
+                <select name="student_id" class="form-control mr-2">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for student_route in students %}
+                        <option value='{{ student_route.student.admissionNumber }}'>{{student_route.student.firstName}} {{ student_route.student.lastName }} - {{ student.admissionNumber }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="time-filter form-group col-md-4">
+                <label class="font-weight-bold">Select Month:</label>
+                <input type="month" class="form-control" name="month">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<br>
+
+
+{% block attendence_list %}
+{% endblock attendence_list %}
+
+
+{% endblock content %}

@@ -1,0 +1,86 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Marks
+{% endblock %}
+{% block content %}
+<style>
+#bulkup{
+    display:none;
+}
+</style>
+{% include "message.html" %}
+
+    <div class="container mt-3">
+        <h2>Add Skill</h2>
+        <hr class="rule"/>
+        <div>
+        </div>
+        <form method="POST">
+        {% csrf_token %}
+            <div class="form">
+                <div class="form-group">
+                    <input type="hidden" name="edit-id">
+                    <label class="pr-1" for=""><b>Select Session</b><span class="text-danger">*</span></label>
+                    <select name="session" class="form-control mr-2" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for session in sessions %}
+                        <option value='{{ session.id }}'>{{ session.start.year }}-{{session.end.year}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="pr-1" for=""><b>Skill Type</b><span class="text-danger">*</span></label>
+                    <input class="form-control" name="skillType" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="pr-1" for=""><b>Skill Category</b><span class="text-danger">*</span></label>
+                    <input class="form-control" name="skillCategory" type="text">
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="submit" class="btn btn-outline-success mt-4">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if skills %}
+        <table class="table table-striped">
+            <thead>
+                <th>Sn no.</th>
+                <th>Session</th>
+                <th>Skill Type</th>
+                <th>Skill Category</th>
+                <th>Action</th>
+
+            </thead>
+            <tbody>
+                {% for skill in skills %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td data-val="{{skill.session.id}}">{{skill.session.start.year}}-{{skill.session.end.year}}</td>
+                    <td>{{skill.skillType}}</td>
+                    <td>{{skill.skillCategory}}</td>
+                    <td><button class="btn btn-primary edit-btn" data-id="{{skill.id}}">Edit</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        <table>
+    {% endif %}
+
+<script>
+    const edit = document.getElementsByClassName('edit-btn');
+        Array.from(edit).forEach(element =>  {
+            element.addEventListener("click", function(){
+                var id = document.querySelector('input[name="edit-id"]');
+                var par = element.parentNode.previousElementSibling
+                document.querySelector('select[name="session"]').value= par.previousElementSibling.previousElementSibling.dataset.val;
+                document.querySelector('input[name="skillType"]').value=par.previousElementSibling.innerHTML;
+                document.querySelector('input[name="skillCategory"]').value=par.innerHTML;
+                document.querySelector('button[name="submit"]').innerHTML="Update";
+                id.value = element.dataset.id;
+            })
+        });
+    
+</script>
+
+
+{% endblock %}

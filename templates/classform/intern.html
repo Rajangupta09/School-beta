@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@1,700&family=Andada&family=IM+Fell+French+Canon+SC&display=swap" rel="stylesheet">
+    <style>
+        *{
+            
+            font-family: 'Amiri', serif;
+            font-family: 'IM Fell French Canon SC', serif;
+            font-family: 'Andada', serif;
+            box-sizing:border-box;
+        }
+          .nav_style a{
+            color:white;
+          }
+          .hov_er a:hover {
+            color: black;
+         }
+         img{
+               max-width: 180px;
+         }
+         /* #id{
+            padding:0;
+            margin:0;
+         } */
+    </style>
+</head>
+<body class = "">
+{% include "message.html" %}
+
+    <nav class="navbar sticky-top navbar-expand-lg bg-primary sticky-top nav_style p-3">
+        <a class="navbar-brand pl-5" href="#"><span><b>INNO</b></span>CENTIVE</a>
+        <button class="navbar-toggler bg-primary" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto pr-5 text-capitalize hov_er">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Our Solvers<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Our Offering</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Challenge Center</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"> Resources</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">about</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">blog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Register</a>
+              </li>
+          </ul>
+        </div>
+      </nav><br><br>
+      <div class = "container bg-light text-center " id = "one">
+          <h3>REGISTER AS SOLVER</h3>
+      </div>
+      <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-5 col-12 text-center bg-warning pt-1 pb-1">
+                <h4>InnoCentive Challenges</h4>
+            </div><br>
+            <div class="col-lg-4 col-md-5 col-12 text-center bg-danger pt-1 pb-1">
+                <h4>Pavillions</h4>
+            </div>
+            <div class="col-lg-4 col-md-5 col-12 text-center bg-warning pt-1 pb-1">
+                <h4>Partner Challenges</h4>
+            </div>
+        </div>
+        <div class="row jumbotron">
+            <form class="form-inline" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}  
+                <!-- <label for="search_team" class="mr-sm-2">Search Team</label>
+                <input type="search" class="form-control mb-2 mr-sm-2" id="searchId"> -->
+                <label for="Search" class="mr-sm-2">Title</label>
+                <input type="text"class = "form-control mr-sm-2" placeholder="Title" name="title" required>
+
+                <label for="discipline" class="mr-sm-2">Tags</label>
+                <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Tags" name="tags" required>
+
+                <label for="type" class="mr-sm-2">Image</label>
+                <input type="file" class="form-control mb-2 mr-sm-2" name="photo" required>
+
+                <label for="pavillions" class="mr-sm-2">Price</label>
+                <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Price" name="price" required>
+
+                <label for="status" class="mr-sm-2">Deadline</label>
+                <input type="date" class="form-control mb-2 mr-sm-2" placeholder="" name="date" id="pwd" required>
+               
+                <button class="btn btn-success mb-2 pl-10 pr-10">Upload</button>
+              </form>
+        </div>
+    </div>
+<hr>
+    {% for i in interns %}
+    <div class="container mb-5 mt-4">
+        <div class="row">
+            <div class="col-lg-3 col-md-5 col-12 ">
+                <img src="{{i.photo.url}}" alt="">
+            </div>
+            <div class="col-lg-7 col-md-5 col-12 ">
+               <h4 class = "text-danger">{{i.title}}</h4><br>
+               <p>Deadline: {{i.date}} 23:59 <b>EDT</b></p>
+               <p><b>Tags:</b> {{i.tags}}
+                </p>
+                 <button type="button" class = "btn">+ View More</button>
+            </div>
+            <div class="col-lg-2 col-md-5 col-12 ">
+                <h3>${{i.price}}</h3>
+                <button class = "btn btn-success">Open</button>
+             </div>
+        </div>
+    </div>
+    <hr>
+    <br />
+    {%endfor%}
+
+
+</body>
+</html>

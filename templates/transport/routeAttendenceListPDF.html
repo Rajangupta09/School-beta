@@ -1,0 +1,152 @@
+{% load transport_tags %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Route List</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        @page {
+            size: A1 landscape;
+            margin: 1.0in 0.25in 0.5in 0.25in;
+            padding: 0;
+
+            @frame header {
+                -pdf-frame-content: headerContent;
+                width: 8in;
+                top: 0.5in;
+                margin-left: 0.5in;
+                margin-right: 0.5in;
+                height: 1.0in;
+            }
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                width: 8in;
+                bottom: 0in;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
+        }
+
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 110%;
+        }
+
+        table td {
+            border: 1px solid rgb(59, 59, 59);
+            padding: 1px;
+            word-wrap: break-word;
+        }
+
+        table td p {
+            margin: 1px 4px;
+            font-size: 0.9rem;
+        }
+
+        table td {
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        table th {
+            border: 1px solid rgb(59, 59, 59);
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #ddd;
+        }
+
+        table th {
+            padding: 1px 4px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .main-h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg p-5 panel">
+        <h4><b>{{route_code}} Attendece Report :</b> {{month}}  {{year}}</h4>
+        <h5 class="pl-5">Present: <span class="text-success"><b>P</b> </span>  Absent: <span class="text-danger"><b>A</b> </span>  Leave: <span class="text-warning"><b>L</b> </span>  Late: <span class="text-info"><b>F</b></span> Not marked: <span class="text-primary"><b>N/m</b></span> Shift unavailable: <span class="text-primary"><b>N/a</b> </span> </h5>
+    </div>
+
+    <div class='container-fluid'>
+    
+        <table class="table table-hover table-bordered ml-3 mt-5">
+            <tr class="table-warning">
+                <th scope="col">Name</th>
+                <th scope="col">Admission No</th>
+                <th scope="col">Phone No</th>
+                <th class="content" scope="col">Presents</th>
+                <th class="content" scope="col">Absents</th>
+                <th class="content" scope="col">Leaves</th>
+                <th class="content" scope="col">Late</th>
+                {% for i in days %}
+                    {% cycle 'SUN' 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' as weekday %}
+                    {% if i != 0%}
+                        <th class="content head">{{i}}<br>{{weekday}}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            {% for student_route_attendence in object_list %}
+                <tr>
+                    <th>{{ student_route_attendence.student_route.student.firstName }} {{ student_route_attendence.student_route.student.lastName }}</th>
+                    <th>{{ student_route_attendence.student_route.student.admissionNumber}}</th>
+                    <th>{{ student_route_attendence.student_route.student.mobileNumber }}</th>
+                    <th class="text-success" >{{ student_route_attendence.present }}</th>
+                    <th class="text-danger" >{{ student_route_attendence.absent }}</th>
+                    <th class="text-info" >{{ student_route_attendence.leave }}</th>
+                    <th class="text-warning" >{{ student_route_attendence.late }}</th>
+                    {% for i in days %}
+                        {% cycle 'SUN' 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' as weekday %}
+                        {% if i != 0%}
+                            <th>
+                                <table>
+                                    <tbody>
+                                        <th>mrng</th>
+                                        <th>afernoon</th>
+                                    </tbody>
+                                    <tbody>
+                                        {% with i|string|add:',morning' as arg %}
+                                            {% if student_route_attendence.day_status|lookup:arg %}
+                                                <th class="text-{{ student_route_attendence.day_status|lookup:arg|color_code }}">{{ student_route_attendence.day_status|lookup:arg|code }}</th>
+                                            {% else %}
+                                                <th>-</th>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {%with i|string|add:',afternoon' as arg%}
+                                            {% if student_route_attendence.day_status|lookup:arg %}
+                                                <th class="text-{{ student_route_attendence.day_status|lookup:arg|color_code }}">{{ student_route_attendence.day_status|lookup:arg|code }}</th>
+                                            {% else %}
+                                                <th>-</th>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </tbody>
+                                </table>
+                            </th>
+                        {% endif %}
+                    {% endfor %}
+
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

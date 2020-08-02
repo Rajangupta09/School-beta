@@ -1,0 +1,113 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Marks
+{% endblock %}
+{% block content %}
+<style>
+#bulkup{
+    display:none;
+}
+</style>
+{% include "message.html" %}
+
+    <div class="container mt-3">
+        <h2>Add Student Skill</h2>
+        <hr class="rule"/>
+        <div>
+        </div>
+        <form method="GET">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for=""><b>Select Session</b><span class="text-danger">*</span></label>
+                    <select name="session" class="form-control mr-2" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for session in sessions %}
+                        <option value='{{ session.id }}'>{{ session.start.year }}-{{session.end.year}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for=""><b>Select Class Section</b><span class="text-danger">*</span></label>
+                    <select class="form-control" id="classform" name="class_name" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for class_room in class_rooms %}
+                        <option value="{{class_room.classSection}}">{{class_room.classSection}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <button type="submit" class="btn btn-outline-success mt-4">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if skills %}
+    {% regroup skills by classroomStudent as students %}
+    {% for student in students %}
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header " id="headingOne">
+                    <h5 class="mb-0">
+                        
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne{{student.grouper.id}}" aria-expanded="true" aria-controls="collapseOne{{stu.grouper.id}}">
+                        {{student.grouper.student.fullName}}
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne{{student.grouper.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <table class="mb-5 table table-striped table-responnsive">
+                            <thead>
+                                <th>Skill Type</th>
+                                <th>Skill Grade</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                {% for skill in student.list %}
+                                    <tr>
+                                        <td>{{skill.skill.skillType}}</td>
+                                        <td>{{skill.skill.skillCategory}}</td>
+                                        <td style="width:15.66%"><input class="form-control" type="text" name="grade" data-key="{{skill.skill.grade}}" value="{{skill.grade}}"></td>
+                                        <td style="width:15.66%"><button class="btn btn-success edit-btn" data-id="{{skill.id}}">Update</button></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+<script>
+    const edit = document.getElementsByClassName('edit-btn');
+        Array.from(edit).forEach(element =>  {
+            element.addEventListener("click", function(){
+                confirm('Are you sure you want to make changes');
+                var data = element.parentNode.previousElementSibling.children[0];
+                console.log(element.dataset.id);
+                console.log(data);
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'skills' %}',
+                    data:{
+                        mid: element.dataset.id,
+                        value: data.value
+                    },
+                    success:function(res){
+                        console.log(res);
+                    },
+                    error:function(err){
+                        data.value = data.dataset.key;
+                    }
+
+                })
+            })
+        });
+    
+</script>
+
+
+{% endblock %}

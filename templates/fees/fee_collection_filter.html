@@ -1,0 +1,78 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Fee Section
+{% endblock %}
+{% block content %}
+<style>
+    .form-container{
+    width: 50%;
+    /*or width: 200px, etc*/
+}
+</style>
+{% include "message.html" %}
+<div class="container">
+    <h3 class="text-center mt-2">Fee Collection</h3>
+    <form method="POST" action="{% url 'feeCollectionFilter' %}" class="form-inline mt-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="pr-1" for="">Session:</label>
+            <select name="session" class="form-control mr-2" id="session">
+                <option selected="true" disabled="disabled" value="a">Select</option>
+                {% for session in Session %}
+                <option value='{{ session.id }}'>{{ session.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mx-3">
+            <label for="id_admission-no">Admission no: </label>
+            <select name="admission-no" id='id_admission-no' class='form-control input-xlarge'>
+                <option value=''>Select</option>
+                {% for student in students %}
+                    <option value="{{ student.admissionNumber }}" >{{ student.admissionNumber }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mx-3">
+            <label for="id_class">Classroom: </label>
+            <select name="classroom" id='id_class' class='form-control'>
+                <option value='' >Select</option>
+                {% for classroom in classrooms %}
+                    <option value="{{ classroom.id }}" >{{ classroom.classSection }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+<div class="form-group mx-3">
+    <label for="id_student">Student: </label>
+        <select name="student"  id='id_student' class='form-control' id="">
+            <option value='' >Select</option>
+        </select>
+    </div>
+        <button class="btn btn-primary mt-2 mx-3" type="submit">Submit</button>
+    </form>
+    {% block mapping %}
+    {% endblock mapping %}
+</div>
+
+<script>
+$(document).ready(()=>{
+    $('#id_class').change((event) => {
+        let classID = event.target.value
+        $.ajax({
+            url: `/api/classroom/${classID}/get-students`,
+            success: function(result){
+                $('#id_student').html('')
+                result.forEach((value,index)=> {
+                    let option = `<option value=${value['admissionNumber']} >${value['firstName']} ${value['lastName']}</option>`
+                    $('#id_student').append(option)
+                    console.log(option)
+                })
+            },
+            error: function(err){
+                $('#id_student').html('')
+            }
+        });
+    })
+})
+</script>
+{% endblock content %}

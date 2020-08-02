@@ -1,0 +1,108 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+TimeTable Details
+{% endblock %}
+{% block content %}
+<style>
+    #display-none{
+        display: none;
+    }
+</style>
+<div class="conatiner p-5">
+    {% include "message.html" %}
+    <h3 class="ml-3">Add Details</h3>
+    <hr class="my-2">
+    <p class="lead">
+        <div class="container">
+            <form method="POST">
+               {% csrf_token %}
+                <div class="form-group">
+                    <label for="">Class Section :</label>
+                    <select name="class_room" class="form-control mr-2" id="class_name" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for class_room in class_rooms %}
+                        <option value='{{ class_room.classSection }}'>{{ class_room.classSection }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div id="subject_form">
+                <div class="subform">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">Subject :</label>
+                            <select class="form-control subject" name="subject" id="sub" required>
+                            <option disabled selected value="">Select</option>
+                            {% for subject in subjects%}
+                                <option value="{{subject.name}}">{{subject.name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="pr-1" for="">Teacher:</label>
+                            <select name="teacher_empID" class="form-control mr-2 teacher" id="teacher_name">
+                                <option selected="true" disabled="disabled" value="">Select</option>
+                                {% for teacher in teachers %}
+                                <option value='{{ teacher.employee.empID }}'>{{ teacher.employee.fullName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <button class="btn" id="add"><i class="fa fa-plus"></i></button>
+                <div class="row justify-content-left">
+                    <button class="col-4 mt-5 container btn btn-primary" id="submitbtn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </p>
+</div>
+<script>
+        $('#add').on('click', function(e){
+            e.preventDefault();
+            content = $('.subform').html();
+            $(content).appendTo("#subject_form");
+        });
+
+        $('#submitbtn').on('click', function(e){
+            e.preventDefault();
+            var subArr = [];
+            var teacherArr = [];
+            var subjects = '';
+            var teachers = '';
+            class_value = $('#class_name').val();
+            subArr = $("select.subject").map(function () {
+            return this.value;
+            });
+            teacherArr = $("select.teacher").map(function () {
+                if(this.value == ''){
+                    return 0
+                }else{
+                    return this.value;
+                };
+            });
+            for (i = 0; i < subArr.length; i++) {
+                subjects += subArr[i] + "-";
+                teachers += teacherArr[i] + "-";
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/timetable/' ,
+                data:{
+                    class_room : class_value,
+                    teacher_empID : teachers,
+                    subject: subjects,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success:function(){
+                    alert("Uploaded Successfully!");
+                },
+                error:function(error){
+                    $('#updatebtn').html('Update');
+                    alert('Couldnot Update!');
+                }
+            }); 
+            console.log('complete');
+        });
+</script>
+{% endblock %}

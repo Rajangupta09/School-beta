@@ -1,0 +1,149 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Add Fee Configuration
+{% endblock %}
+{% block content %}
+
+
+<script src="{% static 'transport/js/dynamicForm.js' %}"></script>
+
+<style>
+    .selectBox {
+      position: relative;
+    }
+
+    .selectBox select {
+      width: 100%;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    #checkboxes {
+      position: absolute;
+      width: 100%;
+      display: none;
+      background-color: white;
+      border: 1px #dadada solid;
+      box-sizing: border-box;
+    }
+
+    #checkboxes label {
+      display: block;
+      padding: 0 10px 0 10px; 
+      margin: 5px 0 5px 0;
+    }
+
+    #checkboxes label:hover {
+      background-color: #1e90ff;
+    }
+</style>
+
+{% include "message.html" %}
+<div class="container w-75">
+<br>
+<br>
+    <h3 class="text-center">Fee Configuration</h3>
+    <form method="POST">
+      {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class='form-row'>
+            <div class=' form-group col-md-3' > {{ form.fee_category|as_crispy_field }} </div>
+            <div class=' form-group col-md-3' > {{ form.session|as_crispy_field }} </div>
+            <div class=' form-group col-md-3' > {{ form.amount|as_crispy_field }} </div>
+        </div>
+
+        <div class='form-row'>
+            <div class=" form-group col-md-3">
+                <div class="browser-default custom-select selectBox" onclick="showCheckboxes()">
+                  <p>Classrooms</p>
+                  <div class="overSelect"></div>
+                  </div>
+                  <div id="checkboxes">
+                      <label style='margin-top:10px;' for="select-all" >
+                          <input type="checkbox" id='select-all'> Select all
+                      </label>
+                      {{form.classrooms|as_crispy_field }}
+                </div>
+            </div>
+        </div>
+        
+      <button type="submit" class="btn btn-primary">Submit</button>
+      {% if form.instance.id %}
+        <a href="{% url 'deleteFeeConfiguration' pk=form.instance.pk %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+    </form>
+
+
+    
+    {% if object_list %}
+      <br>
+      <br>
+      <h3 class="text-center">Fee Conifiguration List</h3>
+
+              <table class="mb-5 table table-striped">
+                <tbody>
+                  <tr>
+                      <th scope="col">Fee Category</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Session</th>
+                      <th scope="col">Classes</th>
+                      <th scope="col">Actions</th>
+                  </tr>
+                  {% for configuration in object_list %}
+                    <tr>
+                      {% url 'editFeeConfiguration' pk=configuration.pk as editURL %}
+                      {% url 'deleteFeeConfiguration' pk=configuration.pk as deleteURL %}
+                      <td>{{ configuration.fee_category.name }}</td>
+                      <td>{{ configuration.amount }}</td>
+                      <td>{{ configuration.session }}</td>
+                      <td>
+                        {% for classroom in configuration.classrooms.all %}
+                          {{ classroom }}{% if not forloop.last %}<span>, </span>{% endif %}
+                        {% endfor %}
+                      </td>
+                      <td>
+                        <a class="badge badge-warning py-2 px-3" href="{{ editURL }}">Edit</a>
+                        <a class="badge badge-danger py-2 px-3" href="{{ deleteURL }}">Delete</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>        
+
+    {% endif %}
+
+
+    <script>
+    
+        var expanded = false;
+
+        function showCheckboxes() {
+          var checkboxes = document.getElementById("checkboxes");
+          if (!expanded) {
+            checkboxes.style.display = "block";
+            expanded = true;
+          } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+          }
+        }
+
+        $(document).ready(function(){
+            $('#select-all').change(function(event){
+                let value = $('#select-all')[0].checked;
+                $('.class-checkbox-item').each(function(index,checkbox){
+                    checkbox.checked = value;
+                })
+                
+            })
+        })
+
+
+    </script>
+
+{% endblock content %}

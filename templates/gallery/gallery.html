@@ -1,0 +1,162 @@
+
+{% extends "dashboard/base.html" %}
+{% block title %}
+Gallery
+{% endblock %}
+{% block content %}
+{% include "message.html" %}
+<style>
+.images{
+    margin-bottom:10%;
+}
+@media(max-width: 567px){
+  .col-sm-4{
+    width: 33%;
+    padding-bottom: 3%;
+    padding-left: 1%;
+    padding-right: 1%;
+  }
+  .modal-dialog{
+    max-width: 90% !important;
+  }
+}
+.modal-dialog{
+  max-width: 80%;
+}
+</style>
+<div class="images mt-4">
+    <div class="ml-4"><h3><b>Images<b></h4></div>
+      <div class="row mx-3" id="first">
+        <a href="https://unsplash.it/1200/768.jpg?image=251" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4 col">
+        <img src="https://unsplash.it/600.jpg?image=251" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=252" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=253" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=254" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=255" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=255" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=256" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=256" class="img-fluid rounded">
+        </a>
+      </div>
+      <div class="row m-3">
+        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=252" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=253" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=254" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=255" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=255" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=256" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=256" class="img-fluid rounded">
+        </a>
+         <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=252" class="img-fluid rounded">
+        </a>
+      </div>
+      <div class="row m-3 ">
+        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=253" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=254" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=255" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=255" class="img-fluid rounded">
+        </a>
+        <a href="https://unsplash.it/1200/768.jpg?image=256" data-toggle="lightbox" data-gallery="gallery" class="col-md-2 col-sm-4">
+        <img src="https://unsplash.it/600.jpg?image=256" class="img-fluid rounded">
+        </a>
+    </div>
+</div>
+
+<div class="albums my-5">
+    <div class="ml-4"><h3><b>Albums<b></h4></div>
+    <div class="row mx-3">
+      {% regroup albums by album_name as list %}
+        {% for a in list %}
+          {% for img in a.list %}
+            {% if forloop.first %}
+            <a data-target="#exampleModal" data-toggle="modal" class="col-md-3" style="max-height: 200px;" id="modaltrigger" onclick="album('{{img.album_name}}')">
+              <img src="{{img.file.url}}" class="img-fluid rounded" style="max-height:200px">
+            </a>
+            {% endif %}
+          {% endfor %}
+          <br>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="videos mt-5">
+ <div class="ml-4"><h3><b>Videos<b></h4></div>
+    <div class="row mx-3">
+            {% for video in videos %}
+              <video width="320" height="240" controls class="m-3">
+                <source src="{{video.file.url}}" type="video/mp4">
+              </video>
+            {% endfor %}
+          <br>
+    </div>  
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mx-3 " id="cont">
+        <h4>No Images...</h4>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js'></script>
+<script>
+$(document).on("click", '[data-toggle="lightbox"]', function(event) {
+  event.preventDefault();
+  $(this).ekkoLightbox();
+});
+
+function album(name){
+  $.ajax({
+    type:'GET',
+    url: 'gallery',
+    data: {name : name},
+    success:function(response){
+      $('#cont').html(response)
+    },
+    error:function(err){
+      alert('non');
+    }
+  })
+
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,143 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+{% load static %}
+
+{% block title %}
+Route Register
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script src={% static 'transport/js/dynamicForm.js' %}></script>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    {{ form.non_field_errors }}
+    {{ form.route_vehicle.non_field_errors }}
+
+    <form action="{% url 'editRoute' routeID=form.instance.routeID %}" method="POST">
+        {% csrf_token %}
+        <h3 class="text-center pb-2">Route</h3>
+        {% crispy form form.helper %}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
+        <div style="display:none;">
+            {{ form.add_detail_form }}
+        </div>
+        <div class="formset" prefix="{{ form.route_vehicle_formset.prefix }}">
+            {{ form.route_vehicle_formset.management_form }}
+            {% for route_vehicle_form in form.route_vehicle_formset %}
+                {% crispy route_vehicle_form route_vehicle_form.helper %}
+                {% for hidden_fields in route_vehicle_form.hidden_fields %}
+                    {{ hidden_fields }}
+                {% endfor %}
+            {% endfor %}
+            <button class='add-new-form btn btn-outline-primary' >Add new vehicle</button>
+        </div>
+        <h3 class='text-center mb-5 mt-5 '>Shifts</h3>
+        
+
+        {% for shift in shifts %}
+            <a
+                class="badge badge-pill badge-warning d-inline py-2 mx-1"
+                href= "{% url 'editShift' routeID=form.instance.routeID detailID=shift.id %}"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                    d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z"
+                    />
+                </svg>
+                Edit shift
+            </a>
+            <table class="mb-5 table table-secondary table-striped">
+                <tbody>
+                    <tr>
+                        <th scope="col">Sub route code</th>
+                        <th scope="col">Start place</th>
+                        <th scope="col">End place</th>
+                        <th scope="col">Route distance</th>
+                    </tr>
+                    <tr>
+                    <td>{{ shift.sub_route_code }}</td>
+                    <td>{{ shift.start_place }}</td>
+                    <td>{{ shift.end_place }}</td>
+                    <td>{{ shift.route_distance }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+        
+        {% if form.detail_form %}
+            <button for='id_add_detail_form' id='add-shift-form' type="button" class="btn btn-block btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+                Add {{ form.detail_form_title }} shift
+            </button> 
+            <br>
+            <br>
+        {% endif %}
+
+
+        <div id="detail-form"></div>
+
+        <button type="submit" class="mt-5 btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#add-shift-form').click(function(event){
+            event.target.value = event.target.value === 'on' ? 'off' : 'on'
+            if (event.target.value === 'on'){
+                $('#id_add_detail_form').prop('checked', true);
+                
+                $("#detail-form").html(`
+                {% if form.detail_form %}
+                {% crispy form.detail_form form.detail_form.helper %}
+                {% for hidden_field in form.hidden_fields %}
+                    {{hidden_field}}
+                {% endfor %}
+                <h3 class='text-center mb-5 mt-5 '>Stoppages</h3>
+                <div class="formset" prefix="{{ form.detail_form.stoppage_formset.prefix }}">
+                    {{ form.detail_form.stoppage_formset.management_form }}
+                    {% for stoppage_form in form.detail_form.stoppage_formset %}
+                        {% crispy stoppage_form stoppage_form.helper %}
+                        {% for hidden_fields in stoppage_form.hidden_fields %}
+                            {{hidden_fields}}
+                        {% endfor %}
+                    {% endfor %}
+                    <button class='add-new-form btn btn-outline-primary' >Add new stoppage</button>
+                </div>
+                {% endif %}
+                `
+                
+            
+            )
+            }
+            else{
+                $('#id_add_detail_form').prop('checked', false);
+                $("#detail-form").html('')
+            }
+        })
+    })
+</script>
+
+{% endblock content %}

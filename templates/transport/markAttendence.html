@@ -1,0 +1,50 @@
+{% extends 'transport/markAttendenceFilter.html' %}
+{% load crispy_forms_tags %}
+
+    
+{% block style %}
+    /* radio button style for attendence form */
+    #div_id_studentrouteattendence_set-0-status .controls{
+        display: flex;
+        flex-flow: row;
+        justify-content: space-evenly;
+    }
+{% endblock style %}
+
+{% block attendence_list %}
+
+    <div class="container-fluid">
+    <h2 class="text-center mt-3 ">Route {{ route_code }} -> {{ shift|capfirst }} Shift</h2>
+    <form method="POST" >
+        {% csrf_token %}
+        <table class="table table-hover table-bordered mt-5">
+            <thead class="table-warning">
+                <tr class="">
+                    <th scope="col">Admission No</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Phone No</th>
+                    <th scope="col">Drop Place</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student_route_formset in form %}
+                <tr>
+                    <th scope="row">{{ student_route_formset.instance.student.admissionNumber}}</th>
+                    <td>{{ student_route_formset.instance.student.firstName }} {{ student_route_formset.instance.student.lastName }}</td>
+                    <td>{{ student_route_formset.instance.student.mobileNumber }}</td>
+                    <td>{{ student_route_formset.instance.route_stoppage }}</td>
+                    <td id="radio-field">
+                        {{ student_route_formset.management_form }}
+                        {{ student_route_formset|crispy }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        <button type="submit" class="btn btn-primary my-2">Update Attendence</button>
+    </form>
+</div>
+
+{% endblock attendence_list %}

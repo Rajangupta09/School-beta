@@ -1,0 +1,54 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+{% load static %}
+
+{% block title %}
+Route Register
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script src={% static 'transport/js/dynamicForm.js' %}></script>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    {{ form.non_field_errors }}
+    {{ form.stoppage_formset.non_field_errors }}
+    
+    
+    <h3 class="text-center pb-2">Route details</h3>
+    <form action="{% url 'editShift' routeID=route.routeID detailID=form.instance.id %}" method="POST">
+        {% csrf_token %}
+        {% crispy form %}
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field }}
+        {% endfor %}
+        <h3 class='text-center mb-5 mt-5 '>Add stoppage</h3>
+        {{ form.stoppage_formset.management_form }}
+        {% for stoppage_form in form.stoppage_formset %}
+            {% crispy stoppage_form stoppage_form.helper %}
+            {% for hidden_fields in stoppage_form.hidden_fields %}
+                {{hidden_fields}}
+            {% endfor %}
+        {% endfor %}
+        <button class='add-new-form btn btn-outline-primary'>Add new stopage</button>
+        <br/>
+        <button type="submit" class="mt-5 btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endblock content %}

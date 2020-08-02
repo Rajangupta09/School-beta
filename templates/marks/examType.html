@@ -1,0 +1,288 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Marks Section
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+#class{
+    display:none;
+    position:absolute;
+}
+#classform{
+    cursor:pointer;
+    overflow:hidden;
+}
+.card-body{
+    max-height: 200px;
+    overflow: scroll;
+    z-index:999;
+}
+
+</style>
+    <div class="container w-75 my-5">
+        <h3>Exam Type</h3>
+        <hr>
+        <form method="post" id="exam_type_form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="pr-1" for=""><b>Select Session</b><span class="text-danger">*</span></label>
+                <select name="session" class="form-control mr-2" id="class_room_for_exam_mapping" required>
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for session in sessions %}
+                    <option value='{{ session.name }}'>{{ session.start }}-{{session.end}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="pr-1" for=""><b>Exam Name</b><span class="text-danger">*</span></label>
+                <select name="exam_name" class="form-control mr-2" id="exam_name_for_exam_type" required>
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for exam_name in exam_names %}
+                    <option value='{{ exam_name.examName }}'>{{ exam_name.examName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for=""><b>Exam Type</b><span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="exam_type" id="exam_type" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="pr-1" for=""><b>Class/Section</b><span class="text-danger">*</span></label>
+                <div class="form-control" id="classform">---Class/Section---</div>
+                    <div class="card w-50" id="class">
+                    <div class="card-body">
+                    <input type="checkbox" id="all">
+                    <label>Select All</label><br/>
+                    {% for class_room in class_rooms %}
+                    <input type="checkbox" value="{{class_room.classSection}}" name="classroom">
+                    <label>{{class_room.classSection}}</label><br/>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="">Priority</label>
+                <input type="number" class="form-control" name="priority" id="priority"  >
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="Description">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <hr>
+    <div class="container-fluid my-5">
+        <table class="table table-striped" id="data">
+        <tr>
+            <th>Id</th>
+            <th>Session</th>
+            <th>Exam Name</th>
+            <th>Exam Type</th>
+            <th>Class</th>
+            <th>Priority</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+        </table>
+    </div>
+
+
+
+<div class="modal fade" id="edit">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body container">
+        <div class="container">
+           <div class="form-group">
+                <label class="pr-1" for=""><b>Select Session</b><span class="text-danger">*</span></label>
+                <select name="session" class="form-control mr-2" id="msession" required>
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for session in sessions %}
+                    <option value='{{ session.name }}'>{{ session.start }}-{{session.end}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="pr-1" for=""><b>Exam Name</b><span class="text-danger">*</span></label>
+                <select name="exam_name" class="form-control mr-2" id="mexam_name" required>
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    {% for exam_name in exam_names %}
+                    <option value='{{ exam_name.examName }}'>{{ exam_name.examName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for=""><b>Exam Type</b><span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="exam_type" id="mexam_type" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="pr-1" for=""><b>Class/Section</b><span class="text-danger">*</span></label>
+                <select class="form-control" id="mclass">
+                    {% for class_room in class_rooms %}
+                    <option value="{{class_room.classSection}}">{{class_room.classSection}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">Priority</label>
+                <input type="number" class="form-control" name="priority" id="mpriority">
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" id="mDescription">
+            </div>
+            <div class="form-group float-right">
+                <button class="btn btn-success" id="editd">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        {% for e in examtypes %}
+        var option = `
+        <tr>
+            <td>{{e.id}}</td>
+            <td>{{e.session.name}}</td>
+            <td>{{e.examName.examName}}</td>
+            <td>{{e.examType}}</td>
+            <td>{{e.classroom.classSection}}</td>
+            <td>{{e.priority}}</td>
+            <td>{{e.description}}</td>
+            <td><button class="btn btn-warning mr-3 data-edit" data-sub="{{e.id}}" data-toggle="modal" data-target="#edit">Edit</button>
+                <button class="btn btn-danger data-delete" data-sub="{{e.id}}">Delete</button>
+            </td>
+        </tr>`
+        $('#data').append(option);
+        {% endfor %}
+    const btn = document.getElementsByClassName('data-edit');
+        Array.from(btn).forEach(element =>  {
+            element.onclick = edit;
+        });
+          const btnd = document.getElementsByClassName('data-delete');
+        Array.from(btnd).forEach(element =>  {
+            console.log(element)
+            element.onclick = deleted;
+        });
+    });
+      
+
+           function deleted(){
+             confirm('Are you sure you want to delete')
+            $.ajax({
+                Type: 'GET',
+                url: '{% url 'addExamType' %}',
+                data:{ 
+                        deid: this.dataset.sub,
+                },
+                success:function(){
+                    setInterval('location.reload()', 3000);        // Using .reload() method.
+                },
+                error:function(err){
+                    alert("non");
+                }
+
+            })
+        };
+
+
+        function edit(){
+            var i = this.dataset.sub;
+            var session = this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling;
+            var examName = this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling;
+            var examType = this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling;
+            var classSection = this.parentElement.previousElementSibling.previousElementSibling.previousElementSibling;
+            var priority = this.parentElement.previousElementSibling.previousElementSibling;
+            var description = this.parentElement.previousElementSibling;
+            document.getElementById('msession').value = session.innerHTML;
+            document.getElementById('mexam_name').value = examName.innerHTML;
+            document.getElementById('mexam_type').value = examType.innerHTML;
+            document.getElementById('mexam_type').dataset.id = i;
+            document.getElementById('mclass').value = classSection.innerHTML;
+            document.getElementById('mpriority').value = priority.innerHTML;
+            if (description.innerHTML.length != 0){
+            document.getElementById('mDescription').value = description.innerHTML;
+            }
+
+        };
+
+        $('#editd').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+                Type: 'GET',
+                url: '{% url 'addExamType' %}',
+                data:{ 
+                        eid:            $('#mexam_type').data('id'),
+                        session:        $('#msession').val(),
+                        ename:          $('#mexam_name').val(),
+                        etype:          $('#mexam_type').val(),
+                        eclass:         $('#mclass').val(),
+                        priority:       $('#mpriority').val(),
+                        description:    $('#mDescription').val(),
+                },
+                success:function(){
+                    setInterval('location.reload()', 3000);        // Using .reload() method.
+                },
+                error:function(err){
+                    alert("non");
+                }
+
+            })
+        });
+
+     
+
+    $('#classform').on('click', function(){
+            $('#class').toggle();
+        });
+        $('#class').on('mouseleave', function(){
+            $('#class').hide();
+        });
+    $('#all').on('click', function(){
+            if($(this).is(":checked")){
+            $('input[name="classroom"]').prop('checked', true);
+            }else{
+            $('input[name="classroom"]').prop('checked', false);
+            }
+        });
+{% comment %} 
+ $(document).on('submit', '#exam_type_form', function(e) {
+
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'addExamType' %}",
+            data: {
+                exam_type: $('#exam_type').val(),
+                min_marks: $('#min_marks').val(),
+                max_marks: $('#max_marks').val(),
+                priority: $('#priority').val(),
+                exam_name: $('#exam_name_for_exam_type').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+
+            },
+            success: function(e) {
+                alert("Exam Type added!");
+            },
+            error: function() {
+                alert("Fail");
+            }
+
+        });
+    }); {% endcomment %}
+</script>
+{% endblock %}

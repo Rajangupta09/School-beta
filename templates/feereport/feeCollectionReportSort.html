@@ -1,0 +1,43 @@
+<div class="container-fluid">
+    <table class="mb-5 table table-secondary table-striped" border="1px">
+
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Admission Number</th>
+                <th scope="col">Submission date</th>
+                <th scope="col">Mobile Number</th>
+                <th scope="col">Class Section</th>
+                <th scope="col">Months Paid</th>
+                <th scope="col">Paid Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if fees != None %}
+            {% for fee in fees %}
+            <tr>
+                <th scope="row"> {{ fee.student.student.fullName}}</th>
+                <td align="center"> {{ fee.student.student.admissionNumber  }}</td>
+                <td align="center"> {{ fee.submissionDate }}</td>
+                <td align="center"> {{ fee.student.student.mobileNumber }}</td>
+                <td align="center"> {{ fee.classSection.classSection }}</td>
+                <td align="center"> {{ fee.monthsPaid }}</td>
+                <td align="center"> {{ fee.amount }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <h3> Sorry no records found. </h3>
+            {% endif %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total:</td>
+                <td align="center">{{ total }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>

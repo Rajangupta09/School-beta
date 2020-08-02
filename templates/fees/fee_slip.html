@@ -1,0 +1,325 @@
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<!-- <style>
+    .leftside,.rightside{
+height: 100%;
+width: 100%;
+    }
+.leftside{
+    background-color:white;
+}
+.rightside{
+    background-color: white;
+}
+.vl {
+   border-left: 6px solid green;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  top: 0;
+}
+.container{
+    justify-content: center;
+
+}
+.con1{
+    border-style: solid;
+}
+.header1 {
+                    font-size: 20px;
+                    font-weight: 100;
+                    text-align: center;
+                    color: #007cae;
+                }
+
+th {
+  text-align: left;
+  width: auto;
+}
+td{
+    width: auto;
+}
+.header {
+                    font-size: 20px;
+                    font-weight: 100;
+                    text-align: center;
+                    color: #007cae;
+                }
+@media all
+ {
+.page-break { display:none; }
+ }
+
+@media print
+ {
+.page-break { display:block; page-break-before:always; }
+ }
+ table.example-table{border-spacing: 30px; border-collapse: separate;}
+ .header1 img {
+  float: left;
+  width: 100px;
+  height: 100px;
+  background: #555;
+  margin-left: 75px;
+}
+</style> -->
+
+  </head>
+  <body>
+{% load static %}
+                <div class="container">
+
+                    <!-- <img src="https://image.shutterstock.com/z/stock-vector-education-book-logo-sign-symbol-icon-548082964.jpg" alt="logo" style="margin-left: 75px; width: 70px; height: 70px; float: left;" > -->
+
+
+                            <h1 style="text-align: center; color: #007cae;"><strong> Rani Laxmibai Public School</h1></strong>
+                            <p style="text-align: center; font-size: smaller;">( Dedicated to memory of Vaidya Pt.Narayan Sharma )</p></div>
+
+                        <div class='header' style="
+                        text-align: center;
+                        color: #007cae;">
+                            <p class='title'>Fee Slip (Student Copy) </p>
+                        </div>
+
+                    <hr style="height:1px;border:none;color:#333;background-color:#333;">
+                    <table>
+                        <tr>
+                            <td><strong>Session:</strong> {{ session.name }} </td>
+                            <td><strong>Date: </strong>07/04/2020 </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #000;">
+                            <td><strong>Fee period:</strong> Quarterly </td>
+                            <td><strong>Receipt no: </strong> #123</td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+
+                            <td><strong>Name:</strong> {{ stu.fullName }} </td>
+                            <td><strong>Admission no: </strong>{{ stu.admissionNumber }} </td>
+                        </tr>
+                        <tr >
+                            <td><strong>Class:</strong> {{ stu.classSection }} </td>
+                            <td><strong>Parent Name:</strong> {{ par.fatherName }} </td>
+                        </tr>
+
+                </table>
+<hr style="height:1px;border:none;color:#333;background-color:#333;">
+
+                <table>
+                    <thead>
+
+                        <tr style="border-bottom: 1px solid #000;">
+                            <th align="left">Sr.no</th>
+                            <th align="left">Description</th>
+                            <th align="left">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr></tr>
+                    {% for fee_details in fee_cycle %}
+                        {% for fee in fee_details.0 %}
+                        <tr>
+                            <td><strong></strong></td>
+                            <td>{{ fee.fee_configuration.fee_category.name }}</td>
+                            <td><i class="fa fa-inr"></i> {{ fee.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% for  balance  in balance  %}
+                        {% for discount in discount %}
+                        <tr>
+                            <td><strong></strong></td>
+                            <td class="text-left"><strong>Balance: </strong></td>
+                            <td class="text-left"><strong>{{ balance }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td class="text-left"><strong>Total Amount: </strong></td>
+                            <td class="text-left"><strong>{{  fee_details.1|add:balance }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td class="text-left"><strong>Discount: </strong></td>
+                            <td class="text-left"><strong>{{  discount.amount }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong></strong></td>
+                            <td class="text-left"><strong>Grand Total: </strong></td>
+                            <td class="text-left"><strong>{{ final_amt }}</strong></td>
+                        </tr>
+
+                            {% endfor %}
+                            {% endfor %}
+                            {% endfor %}
+
+
+                        <tr style="border-bottom: 1px solid #000;"></tr>
+                        <tr></tr>
+                        <tr style="border-bottom: 1px solid #000;" >
+                            <td><strong></strong></td>
+                            <td class="text-left"><strong> Paid: </strong></td>
+                            <td class="text-left"><strong> {{ amount }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="text-align: left;"><strong>Amount in words:</strong>Thirty one thousand five hundred fifty six only/-      </p>
+
+                <hr>
+                <table>
+                    <tr>
+                        <td><strong>Payment mode:</strong> Cash</td>
+                        <td><strong>Balance: </strong> {{ fee_status.balance }} </td>
+                    </tr>
+                    <tr >
+                        <td><strong>Reference:</strong> #222 </td>
+                        <td><strong>Remark: </strong> {{ remarks }} </td>
+                    </tr>
+                    </table>
+
+                <hr style="height:1px;border:none;color:#333;background-color:#333;">
+                    <p style="text-align: center; font-size: smaller;">Fees once paid will not be Refunded under any circumstances.</p>
+            </div>
+            </div>
+<hr>
+
+
+<div class="container">
+
+    <!-- <img src="https://image.shutterstock.com/z/stock-vector-education-book-logo-sign-symbol-icon-548082964.jpg" alt="logo" style="margin-left: 75px; width: 70px; height: 70px; float: left;" > -->
+
+
+            <h1 style="text-align: center; color: #007cae;"><strong> Rani Laxmibai Public School</h1></strong></div>
+            <p style="text-align: center; font-size: smaller;">( Dedicated to memory of Vaidya Pt.Narayan Sharma )</p>
+
+        <div class='header' style="
+        text-align: center;
+        color: #007cae;">
+            <p class='title'>Fee Slip (Student Copy) </p>
+        </div>
+
+    <hr style="height:1px;border:none;color:#333;background-color:#333;">
+    <table>
+        <tr>
+            <td><strong>Session:</strong> {{ session.name }} </td>
+            <td><strong>Date: </strong>07/04/2020 </td>
+        </tr>
+        <tr style="border-bottom: 1px solid #000;">
+            <td><strong>Fee period:</strong> Quarterly </td>
+            <td><strong>Receipt no: </strong> #123</td>
+        </tr>
+        <tr></tr>
+        <tr>
+
+            <td><strong>Name:</strong> {{ stu.fullName }} </td>
+            <td><strong>Admission no: </strong>{{ stu.admissionNumber }} </td>
+        </tr>
+        <tr >
+            <td><strong>Class:</strong> {{ stu.classSection }} </td>
+            <td><strong>Parent Name:</strong> {{ par.fatherName }} </td>
+        </tr>
+
+</table>
+<hr style="height:1px;border:none;color:#333;background-color:#333;">
+
+<table>
+    <thead>
+
+        <tr style="border-bottom: 1px solid #000;">
+            <th align="left">Sr.no</th>
+            <th align="left">Description</th>
+            <th align="left">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr></tr>
+    {% for fee_details in fee_cycle %}
+        {% for fee in fee_details.0 %}
+        <tr>
+            <td><strong></strong></td>
+            <td>{{ fee.fee_configuration.fee_category.name }}</td>
+            <td><i class="fa fa-inr"></i> {{ fee.amount }}</td>
+        </tr>
+        {% endfor %}
+
+        <tr>
+            <td><strong></strong></td>
+            <td class="text-left">
+
+            <p>
+                {% for  balance  in balance  %}
+                {% for discount in discount %}
+                <strong>Balance: </strong>
+            </p>
+            <p>
+                <strong>Total Amount : </strong>
+            </p>
+            <p>
+                <strong>Discount: </strong>
+            </p>
+            <p>
+                <strong>Grand Total: </strong>
+            </p>
+            </td>
+            <td>
+            <p>
+                <strong><i class="fa fa-inr"></i> {{ balance }}</strong>
+            </p>
+            <p>
+                <strong><i class="fa fa-inr"></i> {{ fee_details.1|add:balance }}</strong>
+            </p>
+            <p>
+                <strong><i class="fa fa-inr"></i>{{ discount.amount }}</strong>
+            </p>
+            <p>
+                <strong><i class="fa fa-inr"></i>{{ final_amt }}</strong>
+            </p>
+            {% endfor %}
+            {% endfor %}
+            {% endfor %}
+            </td>
+        </tr>
+
+        <tr style="border-bottom: 1px solid #000;"></tr>
+        <tr></tr>
+        <tr style="border-bottom: 1px solid #000;" >
+            <td><strong></strong></td>
+            <td class="text-left"><strong> Paid: </strong></td>
+            <td class="text-left"><strong> {{ amount }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+<p style="text-align: left;"><strong>Amount in words:</strong>Thirty one thousand five hundred fifty six only/-      </p>
+
+<hr>
+<table>
+    <tr>
+        <td><strong>Payment mode:</strong> Cash</td>
+        <td><strong>Balance: </strong> {{ fee_status.balance }} </td>
+    </tr>
+    <tr >
+        <td><strong>Reference:</strong> #222 </td>
+        <td><strong>Remark: </strong> {{ remarks }} </td>
+    </tr>
+    </table>
+
+<hr style="height:1px;border:none;color:#333;background-color:#333;">
+    <p style="text-align: center; font-size: smaller;">Fees once paid will not be Refunded under any circumstances.</p>
+</div>
+</div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
+</html>

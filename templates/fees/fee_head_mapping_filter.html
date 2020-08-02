@@ -1,0 +1,112 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% load fees_tags %}
+
+{% block title %}
+Fee Head Mapping
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+    .selectBox {
+      position: relative;
+    }
+
+    .selectBox select {
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    #checkboxes {
+      position: fixed;
+      width: 58%;
+      display: none;
+      background-color: white;
+      border: 1px #dadada solid;
+      box-sizing: border-box;
+    }
+
+    #checkboxes label {
+      display: block;
+      padding: 0 10px 0 10px;
+      margin: 5px 0 5px 0;
+    }
+
+    #checkboxes label:hover {
+      background-color: #1e90ff;
+    }
+</style>
+
+{% include "message.html" %}
+
+    <div class="container">
+
+        <br><br>
+        <h3 class='text-center'>Fee Head Mapping</h3>
+        <br><br>
+
+        <form action="{% url 'feeHeadMappingFilter' %}"  method="POST">
+            {% csrf_token %}
+            <div class='form-row'>
+                <div class="form-group col-md-3">
+                    <label for="id_class">Classroom</label>
+                    <select name="classroom" id='id_class' class='form-control'>
+                        <option value='' >-------</option>
+                        {% for classroom in classrooms %}
+                            <option value="{{ classroom.id }}" >{{ classroom.classSection }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                <label for="id_student">Student</label>
+                    <select name="student"  id='id_student' class='form-control' id="">
+                        <option value='' >-------</option>
+                    </select>
+                </div>
+                <div class="col-md-3"></div>
+                <div class="form-group col-md-3">
+                    <label for="id_admission-no">Admission no</label>
+                    <select name="admission-no" id='id_admission-no' class='form-control'>
+                        <option value=''>-------</option>
+                        {% for student in students %}
+                            <option value="{{ student.admissionNumber }}" >{{ student.admissionNumber }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class='btn btn-primary'>Submit</button>
+        </form>
+
+        {% block mapping %}
+        {% endblock mapping %}
+
+    </div>
+
+
+    <script>
+        $(document).ready(()=>{
+            $('#id_class').change((event) => {
+                let classID = event.target.value
+                $.ajax({
+                    url: `/api/classroom/${classID}/get-students`,
+                    success: function(result){
+                        $('#id_student').html('')
+                        result.forEach((value,index)=> {
+                            let option = `<option value=${value['admissionNumber']} >${value['firstName']} ${value['lastName']}</option>`
+                            $('#id_student').append(option)
+                            console.log(option)
+                        })
+                    },
+                    error: function(err){
+                        $('#id_student').html('')
+                    }
+                });
+            })
+        })
+    </script>
+
+{% endblock content %}

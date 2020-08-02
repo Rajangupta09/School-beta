@@ -1,0 +1,96 @@
+{% extends "transport/routeAttendenceListFilter.html" %}
+
+{% load static %}
+{% load transport_tags %}
+
+
+{% block attendence_list %}
+
+<script src={% static 'transport/js/exportExcel.js' %}></script>
+
+<br>
+<div class="bg p-5 panel">
+    <h4><b>{{route_code}} Attendece Report :</b> {{month}}  {{year}}</h4>
+    <h5 class="pl-5">Present: <span class="text-success"><b>P</b> </span>  Absent: <span class="text-danger"><b>A</b> </span>  Leave: <span class="text-warning"><b>L</b> </span>  Late: <span class="text-info"><b>F</b></span> Not marked: <span class="text-primary"><b>N/m</b></span> Shift unavailable: <span class="text-primary"><b>N/a</b> </span> </h5>
+</div>
+
+{% if not object_list %}
+    <br>
+    <h2  class='text-center mt-3 text-danger'>No Record Found</h2>
+{% else %}
+    <div class='container-fluid'>
+        <div class="table-responsive">
+                <br>
+                <iframe id="txtArea1" style="display:none"></iframe>
+                <a style="position:absolute; right:10px;" href="pdf" class="text-dark float-md-right mr-1 mb-1"><i class="far fa-file-pdf text-danger fa-2x"></i></a>
+                <a style="position:absolute; right:40px;" href="#" id='excel' class="text-dark float-md-right mr-1 mb-1"><i class="far fa-file-excel text-success fa-2x"></i></a>
+            <table id='headerTable' class="table table-hover table-bordered ml-3 mt-5">
+                <tr class="table-warning">
+                    <th scope="col">Name</th>
+                    <th scope="col">Admission No</th>
+                    <th scope="col">Phone No</th>
+                    <th class="content" scope="col">Presents</th>
+                    <th class="content" scope="col">Absents</th>
+                    <th class="content" scope="col">Leaves</th>
+                    <th class="content" scope="col">Late</th>
+                    {% for i in days %}
+                        <div style="display:none" > {% cycle 'SUN' 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' as weekday %} </div>
+                        
+                        {% if i != 0%}
+                            <th class="content head">{{i}}<br>{{weekday}}</th>
+                        {% endif %}
+                    {% endfor %}
+
+                </tr>
+                {% for student_route_attendence in object_list %}
+                <tr>
+                    <th>{{ student_route_attendence.student_route.student.firstName }} {{ student_route_attendence.student_route.student.lastName }}</th>
+                    <th>{{ student_route_attendence.student_route.student.admissionNumber}}</th>
+                    <th>{{ student_route_attendence.student_route.student.mobileNumber }}</th>
+                    <th class="text-success" >{{ student_route_attendence.present }}</th>
+                    <th class="text-danger" >{{ student_route_attendence.absent }}</th>
+                    <th class="text-info" >{{ student_route_attendence.leave }}</th>
+                    <th class="text-warning" >{{ student_route_attendence.late }}</th>
+                    {% for i in days %}
+                        <div style="display:none" > {% cycle 'SUN' 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' as weekday %} </div>
+                        {% if i != 0%}
+                            <th>
+                                <table>
+                                    <tbody>
+                                        <th>mrng</th>
+                                        <th>afernoon</th>
+                                    </tbody>
+                                    <tbody>
+                                        {% with i|string|add:',morning' as arg %}
+                                            {% if student_route_attendence.day_status|lookup:arg %}
+                                                <th class="text-{{ student_route_attendence.day_status|lookup:arg|color_code }}">{{ student_route_attendence.day_status|lookup:arg|code }}</th>
+                                            {% else %}
+                                                <th>-</th>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {%with i|string|add:',afternoon' as arg%}
+                                            {% if student_route_attendence.day_status|lookup:arg %}
+                                                <th class="text-{{ student_route_attendence.day_status|lookup:arg|color_code }}">{{ student_route_attendence.day_status|lookup:arg|code }}</th>
+                                            {% else %}
+                                                <th>-</th>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </tbody>
+                                </table>
+                            </th>
+                            
+                        {% endif %}
+                    {% endfor %}
+                    
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+
+    </div>
+{% endif %}
+
+{% endblock attendence_list %}
+
+

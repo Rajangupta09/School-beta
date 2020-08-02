@@ -1,0 +1,328 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Past HomeWork
+{% endblock %}
+{% block content %}
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<style>
+#class, #subjects{
+    display:none;
+    position:absolute;
+}
+#classform, #subjectform{
+    cursor:pointer;
+    overflow:hidden;
+}
+.card-body{
+    height: 200px;
+    overflow: scroll;
+    z-index:999;
+}
+.custom-label{
+  background-color: white;
+  padding-left: 3px;
+  padding-right: 3px;
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  z-index: 4;
+  font-size: 12px;
+  font-weight: bold;
+}
+.form-control{
+    font-size: 14px!important;
+}
+.fix-width{
+    width: 90%;
+    z-index: 5;
+    position: absolute;
+}
+.row{
+    width: 100%!important;
+    margin-bottom: 10px;
+}
+
+table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after{
+    content: " ";
+}
+table.table-bordered.dataTable th, table.table-bordered.dataTable td{
+    padding: 3px!important;
+    text-align: center;
+}
+table thead tr, table tfoot tr{
+    background-color: #4f9594;
+    color: white;
+}
+table thead.searching tr{
+    background-color: white;
+    color: black;
+}
+
+</style>
+{% include "message.html" %}
+
+<div class="container-fluid">
+    <h2 class="text-center my-3 ">Exam Type</h2>
+
+<form class="my-5 form-row" method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group col-md-3">
+          <label class="pr-1 custom-label" for="">Session</label>
+          <select name="session" class="form-control mr-2" id="class_room_for_exam_mapping" required>
+            <option selected="true" disabled="disabled" value="a">Select</option>
+            {% for session in sessions %}
+            <option value='{{ session.id }}'>{{ session.start }}-{{session.end}}</option>
+            {% endfor %}
+          </select>
+          <span class="help-block"></span>
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1 custom-label" for="">Class</label>
+            <div class="form-control" id="classform">---Class---</div>
+                <div class="card fix-width" id="class">
+                <div class="card-body">
+                <input type="checkbox" id="all">
+                <label>Select All</label><br/>
+                {% for class_room in class_rooms %}
+                <input type="checkbox" value="{{class_room.classSection}}" name="class_room">
+                <label>{{class_room.classSection}}</label><br/>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+          <label class="pr-1 custom-label" for="">Exam Type</label>
+          <select class="form-control" id="examtype" name="exam_type">
+          <option disabled value="">Select Exam Type</option>
+          {% for examType in exam_types %}
+            <option value="{{examType.examType}}">{{examType.examType}}</option>
+          {% endfor %}
+          </select>
+          <span class="help-block"></span>
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1 custom-label" for="">Subject</label>
+            <div class="form-control" id="subjectform">---Subjects---</div>
+                <div class="card fix-width" id="subjects">
+                <div class="card-body" id="subwrtclass">
+                  <input type="checkbox" id="alls">
+                  <label>Select All</label><br/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label class="pr-1 custom-label" for="">Max Marks</label>
+            <input type="text" class="form-control number" name="max_marks" id="max_marks" placeholder="">
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1 custom-label" for="">Min Marks</label>
+            <input type="text" class="form-control number" name="min_marks" id="min_marks" placeholder="">
+        </div>
+        <div class="form-group col-md-3">
+            <label class="pr-1 custom-label" for="">weightage</label>
+            <input type="text" class="form-control number" name="weightage" id="weightage" placeholder="/100">
+        </div>
+        <div class="form-group col-md-3 ">
+            <button class="btn btn-success w-100" type="submit">Add</button>
+        </div>
+    </div>
+</form>
+
+<section class="table">
+    <table id="table" class="table table-bordered table-striped w-100">
+          <thead class="searching">
+            <tr>
+              <th>Search Session</th>
+              <th>Search Class</th>
+              <th>Search Exam Type</th>
+              <th>Search Subject</th>
+              <th>Search Max Marks</th>
+              <th>Search Min Marks</th>
+              <th>Search Weightage</th>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <th>Session</th>
+              <th>Class</th>
+              <th>Exam Type</th>
+              <th>Subject</th>
+              <th>Max Marks</th>
+              <th>Min Marks</th>
+              <th>Weightage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for exam in exammap %}
+            <tr data-id="{{exam.id}}">
+                <td>{{exam.session.start.year}}-{{exam.session.end.year}}</td>
+                <td>{{exam.classsubject.class_room.classSection}}</td>
+                <td>{{exam.examType.examType}}</td>
+                <td>{{exam.classsubject.subject.name}}</td>
+                <td>{{exam.maxMarks}}</td>
+                <td>{{exam.minMarks}}</td>
+                <td>{{exam.weightage}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </section>
+
+
+<script>
+    $(document).on("keypress",".number",function(e){
+         if (e.which!=46 && e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+          }
+      });
+
+    $('#classform').on('click', function(){
+        $('#class').toggle();
+    });
+    $('#class').on('mouseleave', function(){
+        $('#class').hide();
+    });
+   $('#all').on('click', function(){
+        if($(this).is(":checked")){
+        $('input[name="class_room"]').prop('checked', true);
+        }else{
+        $('input[name="class_room"]').prop('checked', false);
+        }
+    })
+
+    $('#subjectform').on('click', function(){
+        $('#subjects').toggle();
+    });
+    $('#subjects').on('mouseleave', function(){
+        $('#subjects').hide();
+    });
+   $('#alls').on('click', function(){
+        if($(this).is(":checked")){
+        $('input[name="subject"]').prop('checked', true);
+        }else{
+        $('input[name="subject"]').prop('checked', false);
+        }
+    })
+    
+      $('input[type="checkbox"]').on('click', function(){
+            let val = '';
+            let val2= '';
+            $('input[name="class_room"]').each(function(){
+                if($(this).is(':checked')){
+                    val += this.value + ', ';
+                    $.ajax({
+                        type: 'GET',
+                        url: '{% url 'examMapping' %}',
+                        data:{classs:this.value},
+                        success:function(response){
+                            response = response.split(',');
+                            var option = '';
+                            for(i=0;i<response.length-1;i++){
+                            option += `<input type="checkbox" value="`+ response[i] +`" name="subject">
+                                        <label>`+ response[i]+`</label><br/>`;
+                            }
+                            $('#subwrtclass').append(option);
+                        }
+                    });
+                }
+                if (val != ''){
+                    $('#classform').html(val);
+                }else{
+                    $('#classform').html('---Class---');
+                }
+            });
+            $('input[name="subject"]').each(function(){
+                if($(this).is(':checked')){
+                    val2 += this.value + ', ';
+                }
+                if (val2 != ''){
+                    $('#subjectform').html(val2);
+                }else{
+                    $('#subjectform').html('---Subjects---');
+                }
+            });
+      });
+
+
+
+  const d = document.getElementsByClassName('item');
+    Array.from(d).forEach(element =>  {
+        var i = element.dataset.id;
+        if(i == 'Submitted'){
+            element.innerHTML = '<span class="text-success">Submitted</span>';
+        }else{
+            element.innerHTML = '<span class="text-primary">Not Submitted</span>';
+        }
+    });
+
+
+    const c = document.getElementsByClassName('csub');
+
+    Array.from(c).forEach(element =>  {
+        var i = element.dataset.sub;
+        if(i == 'Submitted'){
+            element.classList.add("text-success");
+        }else{
+            element.classList.add("text-info");
+        }
+    });
+    const t = document.getElementsByClassName('time');
+
+    Array.from(t).forEach(element =>  {
+        var i = element.innerHTML;
+        console.log(i.length);
+        if(i.length == 806){
+            element.innerHTML = '<span class="text-info">Not Submitted</span>';
+        }else{
+            element.classList.add("text-success");
+        }
+    });
+</script>
+
+<script>
+
+  $( document ).ready(function() {
+    get_data_table();
+  });
+
+  function get_data_table(str=''){
+
+    // Setup - add a text input to each footer cell
+    $('#table thead.searching th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="'+title+'" />' );
+    } );
+
+    table_data = $("#table").DataTable({
+      "scrollCollapse": false,
+      "autoWidth": true,
+      "responsive": false,
+      "scrollX": true,
+      "colReorder": true,
+      "searching": false,
+      "processing": true, //Feature control the processing indicator.
+      // "serverSide": true,
+      "order": [], //Initial no order.
+      // Load data for the table's content from an Ajax source
+      // "ajax": {
+      //   "url": "",
+      //   "type": "POST",
+      //   "data":function(data){
+      //     data.status=str;
+      //   }
+      // },
+    });
+  }
+
+  function reload_table()
+  {
+    table_data.ajax.reload(null, false); //reload datatable ajax
+  }
+</script>
+
+{% endblock content %}

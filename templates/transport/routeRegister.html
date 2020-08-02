@@ -1,0 +1,70 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+{% load static %}
+
+{% block title %}
+Route Register
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script src={% static 'transport/js/dynamicForm.js' %}></script>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    {{ form.non_field_errors }}
+    {{ form.detail_form.non_field_errors }}
+    {{ form.detail_form.stoppage_formset.non_field_errors }}
+    {{ form.route_vehicle.non_field_errors }}
+    
+    <h3 class="text-center pb-2">Add route</h3>
+    <form action="{% url 'addRoute' %}" method="POST">
+        {% csrf_token %}
+        {% crispy form %}
+        
+        <div class="formset" prefix="{{ form.route_vehicle_formset.prefix }}">
+            {{ form.route_vehicle_formset.management_form }}
+            {% for route_vehicle_form in form.route_vehicle_formset %}
+                {% crispy route_vehicle_form route_vehicle_form.helper %}
+                {% for hidden_fields in route_vehicle_form.hidden_fields %}
+                    {{ hidden_fields }}
+                {% endfor %}
+            {% endfor %}
+            <button class='add-new-form btn btn-outline-primary'>Add new vehicle</button>
+        </div>
+        
+        <h3 class='text-center mb-5 mt-5 '>Add Route Details</h3>
+        {% crispy form.detail_form form.detail_form.helper %}
+
+        <h3 class='text-center mb-5 mt-5 '>Add Stoppages</h3>
+        <div class="formset" prefix="{{ form.detail_form.stoppage_formset.prefix }}">
+            {{ form.detail_form.stoppage_formset.management_form }}
+            {% for stoppage_form in form.detail_form.stoppage_formset %}
+                {% crispy stoppage_form stoppage_form.helper %}
+                {% for hidden_fields in stoppage_form.hidden_fields %}
+                    {{hidden_fields}}
+                {% endfor %}
+            {% endfor %}
+            <button class='add-new-form btn btn-outline-primary' >Add new stoppage</button>
+        </div>
+        <br>
+        <button type="submit" class="mt-5 btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endblock content %}

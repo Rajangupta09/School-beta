@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+{% load static %}
+
+{% block title %}
+Route Register
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script src={% static 'transport/js/dynamicForm.js' %}></script>
+
+<div class="container-fluid mx-auto px-auto m-3">
+    <form method="POST">
+        {% csrf_token %}
+        <h3 class="text-center mt-3">Are you sure you want to delete this object</h3>
+        <button class="btn-danger btn">Yes</button>
+        <a href="../../" class="btn-primary btn">Cancel</a>
+    </form>
+</div>
+
+
+
+{% endblock content %}

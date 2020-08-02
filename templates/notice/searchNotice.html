@@ -1,0 +1,59 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Student Info
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h2 class="display-5 mb-2">Search Notice</h2>
+        <form class="form-inline my-2 my-lg-0 row" action="{% url 'searchNotice'%}" method="GET">
+            <div class="form-group col-md-3">
+                <label class="pr-1">Keyword: </label>
+                <input class="form-control mr-sm-2" type="search" name="search" placeholder="Notice" aria-label="Search">
+            
+            <div class="form-group col-md-3">
+            <label for="">Select Month</label>
+            <select id="month" class="form-control" name="month">
+                <option value='1'>Janaury</option>
+                <option value='2'>February</option>
+                <option value='3'>March</option>
+                <option value='4'>April</option>
+                <option value='5'>May</option>
+                <option value='6'>June</option>
+                <option value='7'>July</option>
+                <option value='8'>August</option>
+                <option value='9'>September</option>
+                <option value='10'>October</option>
+                <option value='11'>November</option>
+                <option value='12'>December</option>
+            </select>
+        </div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+
+
+  <div class="container" style="margin-top:20px;">
+    {% for i in past_notice %}
+    <div class="card" style="margin-bottom:10px;">
+        <div class="card-header">
+          <span class="float-right"><b>{{i.notice_date}}</b></span>
+          <h4><b>Notice<b></h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Notice to <b>{{i.student.student.fullName}} ( Class : {{i.student.classRoom.classSection}} )</b></h5>
+          <p class="card-text">{{i.notice|safe}}</p>
+          {% if i.notice_document %}
+            <a href="{{i.notice_document.url}}" class="btn btn-primary" download>Notice Files</a>
+          {% else %}
+            <a href="#" class="btn btn-primary">Notice Files</a>
+          {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

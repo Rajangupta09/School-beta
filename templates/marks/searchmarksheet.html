@@ -1,0 +1,48 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Marks Section
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+.data{
+    font-size:0.9rem;
+}
+</style>
+    <div class="container-fluid mt-3 border-bottom border-dark pb-2">
+        <div class="container w-75">
+            <h3 class="">Generate Marks sheet for Student</h3>
+            <hr>
+            <form method="POST" class="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="">Admission Number<span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" name="add_no" id="add_no" aria-describedby="helpId" placeholder="Admission Number" required>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="class_room" required>
+                        <option selected disabled>---Class/Section---</option>
+                        {% for classs in class_room %}
+                        <option value="{{classs.classSection}}">{{classs.classSection}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-4">Submit</button>
+            </form>
+        </div>
+    <div>
+
+    <div>
+        {% regroup students by classroomStudent as student %}
+        {% for stu in student %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{stu.grouper.student.fullName}}</h4>
+                <p class="card-text">Addmission Number: {{stu.grouper.student.admissionNumber}}</p>
+                <a href="{% url 'marksheets' stu.grouper.student.admissionNumber %}" class="card-link">Generate Marksheet</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

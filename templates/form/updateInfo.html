@@ -1,0 +1,335 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Update Student Info
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+.required::after {
+ content: "*";
+ color: red;
+}
+#component{
+    display:none;
+}
+</style>
+
+<form class="container w-75" id="myForm" method="POST" action={% url 'updateInfo' %}>
+{% csrf_token %}
+<h3 class="my-2 text-info ">Update Student Details</h3>
+<div class="form-row">
+  <div class="form-group w-50">
+      <label for="username" class="font-weight-bold">Admission Number of Student to Update</label>
+      <input type="number" min="0" class="form-control" id="addmissionnumber" name="addmissionnumber" value = {{student.admissionNumber}} required>
+  </div>
+  <div class="form-group">
+    <button type="button" class="btn btn-primary" style="margin-top:33px;margin-left:10px;" id="filter">Filter</button>
+  </div>
+</div>
+<hr>
+<div id="component">
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label class="required" for="username"><b>First Name</b></label>
+        <input type="text" class="form-control" id="firstname"  name="firstname" value = {{student.firstName}}>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="username">Last Name</label>
+        <input type="text" class="form-control" id="lastname"  name="lastname" value = {{student.lastName}}>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="pr-1" for="exampleFormControlSelect2">Gender:</label>
+        <select name="gender" class="form-control mr-2" id="exampleFormControlSelect2">
+            {% if student.gender == "Male"%}
+            <option value="">Select</option>
+            <option selected value="Male">Male</option>
+            <option value="Female">Female</option>
+            {% elif student.gender == "Female" %}
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option selected value="Female">Female</option>
+            {% else %}
+            <option selected="true" value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            {% endif %}
+        </select>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label class="required" for="username"><b>Date Of Birth</b></label>
+        <input type="date" class="form-control" id="sDOB" aria-describedby="" value = {{dob}} name="sDOB">
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="username"><b>Class Section</b></label>
+        <select name="classsection" class="form-control mr-2" id="exampleFormControlSelect2">
+            <option selected="true" value="">Select</option>
+            {% for section in class_sections %}
+            {% if section == student.classSection %}
+                <option selected="true" value="{{section}}">{{section}}</option>
+            {% else %}
+            <option value="{{section}}">{{section}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="username"><b>Phone Number</b></label>
+        <input type="text" min="0" class="form-control" id="phonenumber" name="phone_number" value ="{{student.mobileNumber}}" maxlength="10" pattern="\d{10}">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label class="required" for="inputAddress"><b>Current Address</b></label>
+        <input type="text" class="form-control" id="inputAddress" name="currentinputAddress" placeholder="" value = {{cAdd.Address1}}>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="inputAddress2">Current Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" name="currentinputAddress2"  placeholder="" value = {{cAdd.Address2}}>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity"><b>State</b></label>
+        <input type="hidden" id="cstate" value="{{cAdd.state}}">
+        <select  name="inputState" id="state" class="form-control" data-city="city" required>
+            {% if cAdd.state %}
+            <option value="{{cAdd.state}}" selected>{{cAdd.state}}</option>
+            {% else %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity"><b>City:</b></label>
+        <select  name="inputCity" id="city" class="form-control" required>
+            {% if cAdd.city %}
+            <option value="{{cAdd.city}}" selected>{{cAdd.city}}</option>
+            {% endif %}
+        </select>        
+    </div>
+    <div class="form-group col-md-2">
+        <label class="required" for="inputZip"><b>Pin Code</b></label>
+        <input type="text" class="form-control" id="inputZip" name="inputZip" value ={{cAdd.zipCode}} required>
+    </div>
+</div>
+<hr>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label class="required" for="preminputAddress"><b>Permanent Address</b></label>
+        <input type="text" class="form-control" id="perminputAddress" name="perminputAddress" placeholder="" value = {{pAdd.Address1}} required>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="preminputAddress2">Permanent Address 2</label>
+        <input type="text" class="form-control" id="perminputAddress2"  name="perminputAddress2" placeholder="" value = {{pAdd.Address2}}>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-5">
+        <label class="required" for="inputState"><b>State</b></label>
+        <select  name="perminputState" required  id="permanentstate" data-city="permanentcity" class="form-control" required>
+            {% if pAdd.state %}
+            <option value="{{pAdd.state}}" selected>{{pAdd.state}}</option>
+            {% else %}
+            <option value="{{pAdd.state}}" selected>{{pAdd.state}}</option>
+            {% endif %}
+        </select>
+    </div>
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity"><b>City</b></label>
+        <select class="form-control" id="permanentcity" name="perminputCity"required >
+        {% if pAdd.city %}
+        <option value="{{pAdd.city}}" selected>{{pAdd.city}}</option>
+        {% endif %}
+    </select>
+    </div>
+    <div class="form-group col-md-2">
+        <label class="required" for="inputZip"><b>Pin Code</b></label>
+        <input type="text" class="form-control" id="perminputZip" name="perminputZip" value = "{{pAdd.zipCode}}" required>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="username">Religion</label>
+        <input type="text" class="form-control" id="religion" name="religion" value = {{student.religion}}>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="caste">Caste</label>
+        <input type="text" class="form-control" id="caste" name="caste" value = {{student.caste}}>
+    </div>
+</div>
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="tcnumber">Transfer Certificate Number:</label>
+        <input type="number" class="form-control" id="tcnumber" name="tcnumber" value = {{student.tcNumber}}>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="anumber"><b>Aadhar Number:</b></label>
+        <input type="number" class="form-control" id="anumber" name="anumber" value = {{student.aadharNumber}} required>
+        <div class="invalid-feedback">
+            Please provide a valid input.
+        </div>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="feeCategory">Fee Waiver Category:</label>
+        <input type="text" class="form-control" id="feeCategory" name="feeCategory" value = {{student.feeWaiverCategory}}>      
+    </div>
+    <div class="form-group col-md-4">
+        <label for="prevschoolname">Previous School Name:</label>
+        <input type="text" class="form-control" id="prevschoolname" name="prevschoolname" value = {{student.prevschoolname}}>
+    </div>
+    <div class="form-group col" id="sibling-div">
+        <label for="siblingid">Sibling ID:</label>
+        <button type="button" onclick="addSibling()" class="btn btn-outline-secondary btn-sm">Add Sibling</button>
+        <button type="button" onclick="delSibling()" class="btn btn-outline-danger btn-sm" id="display-none">Delete Sibiling</button>
+        <input type="number" class="form-control" id="siblingid" min="0" name="siblingid" value = {{student.siblingID}}>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Route Code:</label>
+        <select name="route_code" class="form-control mr-2" value="0" >
+            <option selected value="">Select</option>
+            {% for route in routes %}
+            <option value='{{ route.stoppage_id }}'>{{ route.route_code }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="">Stoppage Name:</label>
+        <input type="text" class="form-control" name="stoppage_name" value="{{route.route_stoppage}}">
+    </div>
+    <div class="form-group col-md-4">
+        <label class="pr-1" for="">Shift:</label>
+        <select name="shift" class="form-control mr-2" id="">
+        {% if route.shift == Morning %}
+            <option value="">Select</option>
+            <option selected value="Morning">Morning</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Both">Both</option>
+        {% elif route.shift == Afternoon %}
+            <option value="">Select</option>
+            <option value="Morning">Morning</option>
+            <option selected value="Afternoon">Afternoon</option>
+            <option value="Both">Both</option>
+        {% elif route.shift == Both %}
+            <option value="">Select</option>
+            <option value="Morning">Morning</option>
+            <option value="Afternoon">Afternoon</option>
+            <option selected value="Both">Both</option>
+        {% else %}
+            <option selected value="">Select</option>
+            <option value="Morning">Morning</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Both">Both</option>
+        {% endif %}
+        </select>
+    </div>
+</div>
+
+ <h3 class="my-4 text-info border-top border-dark pt-4">Parent/Gaurdian Details </h3>
+    <div class="form-row mt-2">
+        <div class="form-group col-md-3">
+            <label  class="required" for="fathername"><b>Father/Gaurdian Name:</b></label>
+            <input type="text" class="form-control" id="fathername"  name="fathername" value="{{parent.fatherName}}" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="mothername">Mother Name:</label>
+            <input type="text" class="form-control" id="mothername" name="mothername" value="{{parent.motherName}}">
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Father DOB:</label>
+            <input type="date" class="form-control" id="fDOB"  name="fDOB" value="{{parent.Fatherdob}}">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Mother DOB:</label>
+            <input type="date" class="form-control" id="mDOB"  name="mDOB" value="{{parent.Motherdob}}">
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-md-3">
+            <label class="required"><b>Phone Number:</b></label>
+            <input min="0" type="text" class="form-control"  maxlength="10" pattern="\d{10}" id="phone_number" name="phone_number" value="{{parent.MobileNumber}}" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Alternate Phone Number:</label>
+            <input min="0" type="text" class="form-control"  maxlength="10" pattern="\d{10}" id="alt_phone_number" value="{{parent.altMobileNumber}}" name="alt_phone_number">
+        </div>
+        <div class="form-group col-md-3">
+            <label class="required" for="prevschoolname"><b>E-Mail:</b></label>
+            <input type="email" class="form-control" aria-describedby="emailHelp" id="pemail" name="pemail" value="{{parent.email}}" required>
+            <div class="invalid-feedback">
+                Please provide a valid input.
+            </div>
+        </div>
+    </div>
+    <div class="form-row mt-3">
+        <div class="form-group col-md-4">
+            <label for="mothername">Father/Guardian Qualification:</label>
+            <input type="text" class="form-control" id="g_qual"  name="g_qual" value="{{parent.gaurdianQual}}">
+        </div>
+        <div class="form-group mb-5 col-md-5">
+            <label for="mothername">Mother Occuptation:</label>
+            <input type="text" class="form-control" id="m_occup"  name="m_occup" value="{{parent.guardianOccup}}">
+        </div>
+    </div>
+       
+    <div class="row justify-content-around">
+        <button type="submit" class="col-4 mt-5  container btn btn-primary">Submit</button>
+    </div>
+</div>
+</form>
+
+<script>
+        function FillAddress(f) {
+            if (f.customCheck1.checked == true) {
+                f.perminputAddress.value = f.currentinputAddress.value;
+                f.perminputAddress2.value = f.currentinputAddress2.value;
+                f.perminputCity.value = f.inputCity.value;
+                f.perminputState.value = f.inputState.value;
+                f.perminputZip.value = f.inputZip.value;
+            }
+        }
+
+        $('#filter').on('click',function(e) {
+            if($('#addmissionnumber').val() == ''){
+              alert('enter value to filter')
+            }else{
+              let url = `http://127.0.0.1:8000/studentForm/update/${$('#addmissionnumber').val()}`;
+              window.location = url;
+            }
+        });
+$(window).on("load", function(){
+    if($("#firstname").val() == ""){
+        $("#component").css({"display": "none"});
+    }
+    else
+        $("#component").css({"display": "block"});
+});
+</script>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Visitor List
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    .table-img{
+        border-radius: 50%;
+        height: 100px;
+        width: 100px;
+    }
+    
+</style>
+<div class="container-fluid">
+    <h2 class="text-center mt-3 ">Visitor List</h2>
+
+    <form method="POST" action="{% url 'visitorList' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-4">
+            <label class="pr-1" for="">Select Date:</label>
+            <input type="date" class="form-control" name="date" >
+        </div>
+        <div class="form-group col-4">
+             <label for="">Select Month</label>
+            <input class="form-control" type="month" id="month" name="month" min="2019-01" value="{{vmonth}}">
+        </div>
+        </div>
+        
+       
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+    {% if visitors %}
+    <table class="mt-5 table table-secondary table-striped">
+
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Visitor ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Contact To</th>
+                <th scope="col">Purpose</th>
+                <th scope="col">Time</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Photo</th>
+                <th scope="col">Document</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visitor in visitors %}
+            <tr>
+                <td>{{ visitor.id }}</td>
+                <td>{{ visitor.name }}</td>
+                <td>{{ visitor.contact_to}}</td>
+                <td>{{ visitor.purpose}}</td>
+                <td>{{ visitor.date_time}}</td>
+                <td>{{ visitor.mobile_no }}</td>
+                {% if visitor.photo and visitor.document %}
+                <td><img src="{{visitor.photo.url}}" class="table-img" alt=""></td>
+                <td><img src="{{visitor.document.url}}" class="table-img" alt=""></td>
+                {% else %}
+                <td></td>
+                <td></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    {% endif %}
+</div>
+
+{% endblock content %}

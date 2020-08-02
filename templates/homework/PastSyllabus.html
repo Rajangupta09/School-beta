@@ -1,0 +1,28 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Past Syllabus
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+
+  <div class="container" style="margin-top:20px;">
+    {% for i in past_homeworks %}
+    <div class="card" style="margin-bottom:10px;">
+        <div class="card-header">
+          Notice
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Syllabus  {{i.classRoom}}</h5>
+          <p class="card-text">{{i.description|safe}}</p>
+          {% if i.notice_document %}
+            <a href="{{i.document.url}}" class="btn btn-primary" download>Syllabus Files</a>
+          {% else %}
+            <a href="#" class="btn btn-primary">Syllabus Files</a>
+          {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock content %}

@@ -1,0 +1,360 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+TimeTable Details List
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    select#class_name, select#sub{
+        background-color: #cdd6de !important;
+    }
+    div#add_body{
+        background-color: #b1becc !important;
+    }
+</style>
+<div class="container-fluid">
+    <h2 class="text-center my-3 ">TimeTable Details List</h2>
+    <ul class="nav nav-tabs nav-justified">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#home">Class Wise</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#teacherwise">Teacher Wise</a>
+    </li>
+    </ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="home">
+  <table class="mb-5 table table-secondary table-striped table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Class</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Teacher</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% regroup class_room_subject_teachers by class_room as myList %}
+            {% for a in myList %}
+            <tr data-toggle="modal" data-target="#classupdate" onclick="modal('{{a.grouper.classSection}}', '{% for subject in a.list %}{{ subject.subject.name}}%{% endfor %}', '{% for teacher in a.list %}{%if not teacher.teacher == None %}{{ teacher.teacher.employee.fullName}} (Employee ID: {{teacher.teacher.employee.empID}}){%else%}No Teacher Alloted 0{%endif%}%{% endfor %}')">
+                <th scope="row">{{ a.grouper.classSection}}</th>
+                <td>
+                <ul>
+                {% for subject in a.list %}
+                    <li>{{ subject.subject.name}}</li>
+                {% endfor %}
+                </ul>
+               </td>
+                <td><ul>
+                {% for teacher in a.list %}
+                {% if teacher.teacher == None %}
+                <li>No teacher alloted</li>
+                {%else%}
+                <li>{{teacher.teacher.employee.fullName}}</li>
+                {%endif%}
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+  </div>
+  <div class="tab-pane fade" id="teacherwise">
+    <table class="mb-5 table table-secondary table-striped table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Teacher</th>
+                <th scope="col">Class</th>
+                <th scope="col">Subject</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% regroup teacherwise by teacher as myList %}
+            {% for a in myList %}
+            <tr data-toggle="modal" data-target="#classupdate" onclick="teacher_modal('{%if not a.grouper == None %}{{ a.grouper.employee.fullName}} (Employee ID: {{a.grouper.employee.empID}}){%else%}No Teacher Alloted 0{%endif%}', '{% for subject in a.list %}{{ subject.subject.name}}%{% endfor %}', '{% for class in a.list %}{{class.class_room.classSection}}%{% endfor %}')">
+                {% if a.grouper == none%}
+                    <th> No teacher alloted</th>
+                {% else %}
+                <th scope="row">{{ a.grouper.employee.fullName}}   (Employee ID: {{a.grouper.employee.empID}})</th>
+                {% endif%}
+                <td>
+                <ul>
+                {% for class in a.list %}
+                    <li>{{ class.class_room.classSection}}</li>
+                {% endfor %}
+                </ul>
+               </td>
+                <td><ul>
+                {% for subject in a.list %}
+                <li>{{subject.subject.name}}</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+  </div>
+</div>
+
+    <div id="classupdate" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                            <h3 class="m-4 pr-1 " id="class_value">Class:</h3>
+                    <div class="container">
+                        <table class="table table-hover table-success" id="model_table">
+                            <thead>
+                            
+                            </thead>
+                            <tbody id="model_body">
+                            </tbody>
+                        </table>
+                        <div id="form"></div>
+                   </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="addsubject" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body container" id="add_body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+var temp = '';
+function modal(cname, sub, teacher){
+    $('#model_table thead').html('<tr><th>Subject</th><th>Teacher</th><th></th></tr>');
+    $('#class_value').html('Class: ' + cname + '<span class="float-right" data-toggle="tooltip" title="Add Subject"><button class="btn" id="addsub" data-toggle="modal" data-target="#addsubject" onclick="addsub(\'' + cname + '\')" ><i class="fa fa-plus"></i></button></span>');
+    subArr = sub.split("%");
+    teacherArr = teacher.split("%");
+    option = '';
+    for(var i=0;i<subArr.length-1;i++){
+        var tid = teacherArr[i].match(/-?\d+\.?\d*/);
+        option += '<tr><td>' + subArr[i] + '</td><td>' + teacherArr[i] + '</td><td><button class="btn btn-danger ml-4 float-right" id="class_edit" data-toggle="tooltip" title="Delete" onClick="deletetim(\''+ cname + '\',\'' + subArr[i] +  '\',\'' + tid + '\')"><i class="fa fa-trash"></i></button><button class="btn btn-warning float-right" id="class_edit" data-toggle="tooltip" title="EDIT" onClick="formtim(\'' + cname  + '\',\'' +subArr[i]+ '\',\'' + teacherArr[i] + '\')"><i class="fa fa-file-alt"></i></button></td></tr>';
+    }
+    $('#model_body').html(option);
+}
+
+function teacher_modal(teachername, sub, classname){
+    $('#model_table thead').html('<tr><th>Subject</th><th>Class</th><th></th></tr>');
+    var tid = teachername.match(/-?\d+\.?\d*/);
+    $('#class_value').html('Teacher: ' + teachername + '<span class="float-right" data-toggle="tooltip" title="Add Subject"><button class="btn" id="addsub" data-toggle="modal" data-target="#addsubject" onclick="addsub(\'' + teachername + '\')" ><i class="fa fa-plus"></i></button></span>');
+    subArr = sub.split("%");
+    classArr = classname.split("%");
+    option = '';
+    for(var i=0;i<subArr.length-1;i++){
+        option += '<tr><td>' + subArr[i] + '</td><td>' + classArr[i] + '</td><td><button class="btn btn-danger ml-4 float-right" id="class_edit" data-toggle="tooltip" title="Delete" onClick="deletetim(\''+ classArr[i] + '\',\'' + subArr[i] +  '\',\'' + tid + '\')"><i class="fa fa-trash"></i></button><button class="btn btn-warning float-right" id="class_edit" data-toggle="tooltip" title="EDIT" onClick="formtim(\'' + classArr[i]  + '\',\'' +subArr[i]+ '\',\'' + teachername + '\')"><i class="fa fa-file-alt"></i></button></td></tr>';
+    }
+    $('#model_body').html(option);
+}
+
+function formtim(cval, subval, teacherval){
+    temp = $('#model_table').hide();
+    var teacherid = teacherval.match(/-?\d+\.?\d*/);
+    var form = `<button type="button" class="close" onclick="reclose()">&times;</button>
+                <form method="POST" class="form-group ml-5">
+               {% csrf_token %}
+                <div class="form-group">
+                    <label for="">Class Section:</label>
+                    <select name="class_room" class="form-control mr-2" id="class_name" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for class_room in class_rooms %}
+                        <option value='{{ class_room.classSection }}'>{{ class_room.classSection }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">Subject :</label>
+                            <select class="form-control subject" name="subject" id="sub" required>
+                            <option disabled selected value="">Select</option>
+                            {% for subject in subjects%}
+                                <option value="{{subject.name}}">{{subject.name}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="pr-1" for="">Teacher:</label>
+                            <select name="teacher_empID" class="form-control mr-2 teacher" id="teacher_name">
+                                <option selected="true" disabled="disabled" value="">Select</option>
+                                {% for teacher in teachers %}
+                                <option value='{{ teacher.employee.empID }}'>{{ teacher.employee.fullName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                         <div class="col-md-8 mx-auto mt-4">
+                            <button class="btn btn-primary" id="updatebtn" onclick="event.preventDefault(); update('`+ cval + '\',\'' + subval +  '\',\'' + teacherid + `');"><i class="fa fa-file-alt"> </i>Update</button>
+                            <button class="btn btn-danger ml-2" id="deletebtn" onClick="event.preventDefault(); deletetim('`+ cval + '\',\'' + subval +  '\',\'' + teacherid + `');"><i class="fa fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+            </form>`;
+    $('#form').html(form);
+    $('#form').fadeIn();
+    $('#class_name').val(cval);
+    $('#sub').val(subval);
+    $('#teacher_name').val(teacherid);
+}
+function reclose(){
+    $('#form').hide();
+    $('#model_table').fadeIn();
+}
+function update(preclass, presub, preteacher){
+    $('#updatebtn').html('<span class="spinner-grow spinner-grow-sm"></span>Updating..');
+    newclass = $('#class_name').val();
+    newsub = $('#sub').val();
+    newteacher = $('#teacher_name').val();
+    if (preclass == newclass && newsub == presub && preteacher == newteacher){
+        alert("Dublicate value cannot update");
+        $('#updatebtn').html('<i class="fa fa-file-alt"> </i> Update');
+        return
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/timetable/viewTimeTableDetialsList',
+        data:{
+            update : 'True',
+            preclass : preclass,
+            presub : presub,
+            preteacher : preteacher,
+            newclass : newclass,
+            newsub: newsub,
+            newteacher : newteacher,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success:function(){
+            $('#updatebtn').addClass('btn-success');
+            $('#updatebtn').removeClass('btn-primary');
+            $('#updatebtn').html('<i class="fa fa-reload"></i>Updated');
+            alert("Done please Refresh the page to see result!");
+        },
+        error:function(error){
+            $('#updatebtn').html('<i class="fa fa-file-alt"> </i> Update');
+            alert('Couldnot Update!');
+        }
+
+    });
+    return false;
+}
+
+function deletetim(classval, subval, teacherval){
+    confirm('Confirm Delete class: ' + classval+ '  Subject: ' + subval);
+    $.ajax({
+        type: 'GET',
+        url: '/timetable/viewTimeTableDetialsList',
+        data:{
+            delete : 'True',
+            preclass : classval,
+            presub : subval,
+            preteacher : teacherval,
+        },
+        success:function(){
+            $('#updatebtn').html('Updated');
+            alert("Deleted please Refresh the page to see result!");
+        },
+        error:function(error){
+            $('#updatebtn').html('Update');
+            alert('Couldnot Delete!');
+        }
+
+    });
+    return false;
+}
+function addsub(name){
+    let main = name.split('-');
+    let content = '';
+    if (main.length == 1){
+        var id = name.match(/-?\d+\.?\d*/);
+        content = `<button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="container mt-4 w-75">
+                <h3 class="mt-3">Teacher: `+ name + `</h3>
+                <form method="POST" class="form-group mt-4">
+                    {%csrf_token%}
+                    <div class="form-group">
+                        <input type="hidden" name="teacherid" value="`+ id +`">
+                        <label for="">Class Section:</label>
+                        <select name="class_room" class="form-control mr-2" id="class_name" required>
+                            <option selected="true" disabled="disabled" value="a">Select</option>
+                            {% for class_room in class_rooms %}
+                            <option value='{{ class_room.classSection }}'>{{ class_room.classSection }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Subject :</label>
+                        <select class="form-control subject" name="subject" id="sub" required>
+                        <option disabled selected value="">Select</option>
+                        {% for subject in subjects%}
+                            <option value="{{subject.name}}">{{subject.name}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+                </div>` ;
+    }else{
+        content = `<button type="button" class="close" data-dismiss="modal">&times;</button>
+                <div class="container mt-4 w-75">
+                <h3 class="mt-3">Class: `+ name + `</h3>
+                <form method="POST" class="form-group mt-4">
+                    {%csrf_token%}
+                    <div class="form-group">
+                        <label for="">Subject :</label>
+                        <input type="hidden" name="classvalue" value="`+ name +`">
+                        <select class="form-control subject" name="subject" id="sub" required>
+                        <option disabled selected value="">Select</option>
+                        {% for subject in subjects%}
+                            <option value="{{subject.name}}">{{subject.name}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="pr-1" for="">Teacher:</label>
+                        <select name="teacher-value" class="form-control mr-2 teacher" id="teacher_name" value="0">
+                            <option selected="true" disabled="disabled" value="">Select</option>
+                            {% for teacher in teachers %}
+                            <option value='{{ teacher.employee.empID }}'>{{ teacher.employee.fullName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+                </div>` ;
+    }
+    $('#add_body').html(content);
+}
+</script>
+{% endblock content %}

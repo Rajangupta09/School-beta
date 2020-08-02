@@ -1,0 +1,49 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Search Employee
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+
+<div class="container-fluid">
+<table class="mb-5 table table-secondary table-striped">
+<h3>Deleted Employee's</h3><br />
+{% for employee in employees %}
+{% if employee.is_deleted == True %}
+
+    <thead>
+       <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Emp ID</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Mobile Number</th>
+            <th scope="col">Category</th>
+            <th scope="col">DOB</th>
+            <th scope="col">Date of Joining</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">{{ employee.fullName}}</th>
+            <th scope="row">{{ employee.empID}}</th>
+            <td>{{ employee.gender }}</td>
+            <td>{{ employee.mobile_number }}</td>
+            <td>{{ employee.empCategory }}</td>
+            <td>{{ employee.dob }}</td>
+            <td>{{ employee.joiningDate }}</td>
+            <td><a href="{% url 'permanentdelete' employee.empID %}"><button class="btn btn-danger"><i class="fa fa-trash"></i>  Permanently Delete</button></a> <a href="{% url 'restore' employee.empID %}"><button class="btn btn-success"><i class="fa fa-recycle"></i>  Restore Account</button></a></td>
+
+        </tr>
+    </tbody>
+{% else %}
+    <h4>No Employee to Show!!</h4>
+{% endif%}
+{% endfor %}
+
+</table>
+</div>
+
+
+{% endblock %}

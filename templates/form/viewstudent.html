@@ -1,0 +1,164 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Update Student Info
+{% endblock %}
+{% block content %}
+
+{% include "message.html" %}
+<style>
+label{
+    font-weight:700;
+}
+</style>
+
+<h3 class="my-2 text-info ">View Student Details</h3>
+
+<hr>
+<div class="container">
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label class="required" for="username">First Name: {{student.firstName}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="username">Last Name: {{student.lastName}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="pr-1" for="exampleFormControlSelect2">Gender: {{student.gender}}</label>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label class="required" for="username">Date Of Birth : {{dob}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="username">Class Section : {{student.classSection}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="username">Phone Number: {{student.mobileNumber}}</label>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label class="required" for="inputAddress">Current Address : {{cAdd.Address1}}</label>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="inputAddress2">Current Address 2 : {{cAdd.Address2}}</label>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity">State : {{cAdd.state}}</label>
+    </div>
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity">City: {{cAdd.city}}</label>      
+    </div>
+    <div class="form-group col-md-2">
+        <label class="required" for="inputZip">Pin Code: {{cAdd.zipCode}}</label>
+    </div>
+</div>
+<hr>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label class="required" for="preminputAddress">Permanent Address: {{pAdd.Address1}}</label>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="preminputAddress2">Permanent Address 2 : {{pAdd.Address2}}</label>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-5">
+        <label class="required" for="inputState">State : {{pAdd.state}}</label>
+    </div>
+    <div class="form-group col-md-5">
+        <label class="required" for="inputCity">City: {{pAdd.city}}</label>
+    </div>
+    <div class="form-group col-md-2">
+        <label class="required" for="inputZip">Pin Code : {{pAdd.zipCode}}</label>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="username">Religion : {{student.religion}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="caste">Caste : {{student.caste}}</label>
+    </div>
+</div>
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="tcnumber">Transfer Certificate Number :  {{student.tcNumber}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="required" for="anumber"><b>Aadhar Number:  {{student.aadharNumber}}</b></label>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-4">
+        <label for="feeCategory">Fee Waiver Category :  {{student.feeWaiverCategory}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="prevschoolname">Previous School Name : {{student.prevschoolname}}</label>
+    </div>
+    <div class="form-group col" id="sibling-div">
+        <label for="siblingid">Sibling ID : {{student.siblingID}}</label>
+    </div>
+</div>
+
+<div class="form-row mt-2">
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Route Code : {{route.route_code}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="">Stoppage Name: {{route.route_stoppage}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="pr-1" for="">Shift : {{route.shift}}</label>
+    </div>
+</div>
+<hr />
+<div class="form-row mt-2">
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Father/Guardian Name : {{parent.fatherName}}</label>
+    </div>
+    <div class="form-group col-md-3">
+        <label for="">Mother Name: {{parent.motherName}}</label>
+    </div>
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Father DOB : {{parent.Fatherdob}}</label>
+    </div>
+      <div class="form-group col-md-3">
+        <label class="pr-1" >Mother DOB : {{parent.Motherdob}}</label>
+    </div>
+</div>
+<div class="form-row mt-2">
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Phone Number : {{parent.MobileNumber}}</label>
+    </div>
+    <div class="form-group col-md-3">
+        <label for="">Alternate Phone Number: {{parent.altMobileNumber}}</label>
+    </div>
+    <div class="form-group col-md-3">
+        <label class="pr-1" >Email : {{parent.email}}</label>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label class="pr-1" >Father Qualification : {{parent.guardianQual}}</label>
+    </div>
+    <div class="form-group col-md-4">
+        <label class="pr-1" >Mother Qualification : {{parent.MotherQual}}</label>
+    </div>
+</div>
+<div class="form-row">
+    <a href="{% url 'updateInfoWithData' student.admissionNumber %}"><button class="btn btn-warning"><i class="fa fa-pencil"></i>Edit</button></a>
+    <a href="{% url 'printStudentData' student.admissionNumber  %}"><button class="btn btn-success"><i class="fa fa-print"></i>Edit</button></a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "feereport/feeCollectionfilter.html" %}
+{% block title %}
+Fee Report
+{% endblock %}
+{% block mapping %}
+
+<div class="container-fluid">
+    <table class="mb-5 table table-secondary table-striped">
+
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Admission Number</th>
+                <th scope="col">Submission date</th>
+                <th scope="col">Mobile Number</th>
+                <th scope="col">Class Section</th>
+                <th scope="col">Months Paid</th>
+                <th scope="col">Paid Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if fees != None %}
+            {% for fee in fees %}
+
+            <tr>
+                <th scope="row">{{ fee.student.student.fullName}}</th>
+                <td>{{ fee.student.student.admissionNumber  }}</td>
+                <td>{{ fee.submissionDate }}</td>
+                <td>{{ fee.student.student.mobileNumber }}</td>
+                <td>{{ fee.classSection.classSection }}</td>
+                <td>{{ fee.monthsPaid }}</td>
+                <td>{{ fee.amount }}</td>
+            </tr>
+            {% endfor %}
+
+            {% else %}
+            <h3> Sorry no records found. </h3>
+            {% endif %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total:</td>
+                <td>{{ total }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+    <form method="GET" action="{% url 'feeCollectionReportsort' %}">
+        <label class="mx-5" for="payment">Filter by:</label>
+                <select name="sort" class="form-control w-25" id="sort">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    <option value='{{ date }}'> Today </option>
+                    <option value='{{ yesterday }}'> Yesterday </option>
+                    <option value='{{ month }}'>Monthly</option>
+                    <option value='RTGS/NEFT'>Year</option>
+
+                </select>
+                <button class="btn btn-primary mt-2"> Apply </button>
+    </form>
+<a href="{% url 'feeCollectionReportpdf' %}"><button class="btn btn-primary mt-2">Download PDF</button></a>
+<!-- <a href="{% url 'feeCollectionReportcsv' %}"><button class="btn btn-primary mt-2">Download xlx</button></a> -->
+</div>
+
+
+{% endblock %}

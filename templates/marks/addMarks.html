@@ -1,0 +1,259 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Marks
+{% endblock %}
+{% block content %}
+<style>
+#bulkup{
+    display:none;
+}
+</style>
+{% include "message.html" %}
+
+    <div class="container mt-3">
+        <h2>Add Student Exam Marks</h2>
+        <hr class="rule"/>
+        <form method="GET" action="{% url 'addMarks' %}">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for=""><b>Select Session</b><span class="text-danger">*</span></label>
+                    <select name="session" class="form-control mr-2" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for session in sessions %}
+                        <option value='{{ session.id }}'>{{ session.start.year }}-{{session.end.year}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for=""><b>Select Class Section</b><span class="text-danger">*</span></label>
+                    <select class="form-control" id="classform" name="class_name" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                        {% for class_room in class_rooms %}
+                        <option value="{{class_room.classSection}}">{{class_room.classSection}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for=""><b>Select Exam Type</b><span class="text-danger">*</span></label>
+                    <select name="exam_type" class="form-control mr-2" id="exam_name_for_exam_type" required>
+                        <option selected="true" disabled="disabled" value="a">Select</option>
+                         {% for exam_type in exam_types %}
+                        <option value='{{ exam_type.examType }}'>{{ exam_type.examType }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <button type="submit" class="btn btn-outline-success mt-4">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if exams %}
+        <hr />
+        <div class="row">
+            <button class="btn btn-success float-right offset-6 col-md-2" id="bulkupdate">Bulk Update</button>
+            <button class="btn btn-warning float-right offset-1 col-md-2" id="updatebtn">Update</button>
+        </div>
+        <hr />
+        {% regroup exams by classroomStudent as student %}
+        <div id="update">
+        
+        {% for stu in student %}
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header " id="headingOne">
+                    <h5 class="mb-0">
+                        
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne{{stu.grouper.id}}" aria-expanded="true" aria-controls="collapseOne{{stu.grouper.id}}">
+                        {{stu.grouper.student.fullName}}
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne{{stu.grouper.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-5 form-row offset-md-1">
+                                <label class="col-md-4">Roll No:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{ stu.grouper.roll_number }}">
+                            </div>
+                            <div class="col-md-6 form-row">
+                                <label class="col-md-4">Name:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{stu.grouper.student.fullName}}">
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-5 form-row offset-md-1">
+                                <label class="col-md-4">Reg. No:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{stu.grouper.student.admissionNumber}}">
+                            </div>
+                            <div class="col-md-6 form-row">
+                                <label class="col-md-4">Father Name:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{stu.grouper.student.parent.fatherName}}">
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-5 form-row offset-md-1">
+                                <label class="col-md-4" >DOB:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{stu.grouper.student.dob}}">
+                            </div>
+                            <div class="col-md-6 form-row">
+                                <label class="col-md-4">Class Section:</label>
+                                <input class="form-control col-md-4 ml-2" type="text" disabled value="{{ stu.grouper.classRoom.classSection }}">
+                            </div>
+                        </div>
+                    </div>
+                    <table class="mb-5 table table-primary table-striped table-responnsive">
+                        <thead>
+                            <th>Paper</th>
+                            <th>Obtain Marks</th>
+                            <th>Obtain Grade</th>
+                            <th>Max Marks</th>
+                            <th>Min Marks</th>
+                            <th>Max User Marks</th>
+                            <th>Weightage</th>
+                            <th>Remarks</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </thead>
+                        <tbody>
+                            {% for exam in stu.list %}
+                                <tr>
+                                    <td>{{exam.exam.classsubject.subject.name}}</td>
+                                    <td><input type="number" class="form-control" name="marks" value="{% if not exam.marks == None %}{{exam.marks}}{% endif %}" max="{{exam.exam.maxMarks}}" min="0"></td>
+                                    <td><input type="Text" class="form-control" value="{% if not exam.grade == None %}{{exam.grade}}{% endif %}"></td>
+                                    <td><input type="number" class="form-control" value="{{exam.exam.maxMarks}}" disabled></td>
+                                    <td><input type="number" class="form-control" value="{{exam.exam.minMarks}}" disabled></td>
+                                    <td><input type="number" class="form-control" value="{% if not exam.maxusermarks == None %}{{exam.maxusermarks}}{% endif %}"></td>
+                                    <td><input type="number" class="form-control" value="{% if not exam.weightage == None %}{{exam.weightage}}{% endif %}"></td>
+                                    <td><input type="text" class="form-control" value="{% if exam.remarks == None %}{% else %}{{exam.remarks}}{% endif %}"></td>
+                                    <td><input type="number" class="form-control" value="{% if not exam.marks == None %}{{exam.marks}}{% endif %}"></td>
+                                    <td><button class="btn btn-success edit-btn" data-id="{{exam.id}}">Update</button><button data-sub="{{exam.id}}" class="btn btn-danger delete-btn">Delete</button></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfooter>
+                            <tr>
+                                <td>Total:</td>
+                                <td><input type="number" class="form-control" name="total"></td>
+                                <td><button class="btn btn-info total">Add Marks</button></td>
+                            </tr>
+                        </tfooter>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+        <div id="bulkup">
+            {% regroup exams by classroomStudent as students %}
+            <table class="table table-striped" id="bulk-data">
+                <thead>
+                {% for stu in students%}
+                    {% if forloop.first %}
+                        <tr>
+                            <th>Sr no<br /><br/></th>
+                            <th>Name<br /><br/></th>
+                            <th>Add. no<br /><br/></th>
+                            {% for exam in stu.list %}
+                            <td>{{exam.exam.classsubject.subject.name}}<br />Min Marks: {{exam.exam.minMarks}}<br />Max Marks: {{exam.exam.maxMarks}}</td>
+                            {% endfor %}
+                            <th style="width: 10.66%">Total<br /><br/></th>
+                            <th style="width: 10.66%">%<br /><br/></th>
+                            <th>Actions</th>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for stu in students%}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{stu.grouper.student.fullName}}</td>
+                            <td>{{stu.grouper.student.admissionNumber}}</td>
+                            {% for exam in stu.list %}
+                                <td><input type="number" class="form-control" name="bmarks" data-bid="{{exam.id}}" value="{% if not exam.marks == None %}{{exam.marks}}{% endif %}"  maxlength="3" size="2" min="0" max="{{exam.exam.maxMarks}}"  /></td>
+                            {% endfor %}
+                            <td><input class="form-control" value="" name="btotal" disabled/></td>
+                            <td><input class="form-control" value="" name="bpercentage" disabled/></td>
+                            <td><button class="btn btn-success bulk-update-btn" >Update</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    {% endif %}
+
+<script>
+    const edit = document.getElementsByClassName('edit-btn');
+        Array.from(edit).forEach(element =>  {
+            element.addEventListener("click", function(){
+                confirm('Are you sure you want to make changes');
+                var data = element.parentNode.parentNode.getElementsByTagName('td');
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'addMarks' %}',
+                    data:{
+                        mid: element.dataset.id,
+                        marks: data[1].children[0].value,
+                        grade: data[2].children[0].value,
+                        maxusermarks: data[5].children[0].value,
+                        weightage: data[6].children[0].value,
+                        remarks: data[7].children[0].value,
+                    },
+                    success:function(res){
+                        data[1].children[0].classList.remove('is-invalid');
+                        data[1].children[0].classList.remove('is-valid');
+                        data[8].children[0].value = data[1].children[0].value;
+                    },
+                    error:function(err){
+                        data[1].children[0].classList.add('is-invalid');
+                    }
+
+                })
+            })
+        });
+     const deletebtn = document.getElementsByClassName('delete-btn');
+        Array.from(deletebtn).forEach(element =>  {
+            element.addEventListener("click", function(){
+                confirm('Are you sure you want to make changes');
+                $.ajax({
+                    type:'GET',
+                    url:'{% url 'addMarks' %}',
+                    data:{
+                        deleteid: element.dataset.id,
+                    },
+                    success:function(res){
+                        element.parentElement.parentElement.remove()
+                    },
+                    error:function(err){
+
+                        data[1].children[0].classList.add('is-invalid');
+                    }
+
+                })
+            })
+        });
+
+    const totalbtn = document.getElementsByClassName('total');
+        Array.from(totalbtn).forEach(element =>  {
+            element.addEventListener("click", function(){
+                var data = element.parentElement.parentElement.parentElement.previousElementSibling.getElementsByTagName('tr');
+                var sum = 0;
+                for(var i=0;i<data.length;i++){
+
+                    var temp = data[i].children[1].children[0].value;
+                    if (temp.length != 0){
+                        sum += parseInt(temp);
+                    }
+                }
+                element.parentElement.previousElementSibling.children[0].value=sum
+            })
+        });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,206 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Student Attendence
+{% endblock %}
+{% block content %}
+{% include "message.html" %}
+<style>
+#student-attendence{
+    display:none;
+}
+#holidayDiv{
+    display: none;
+}
+#spinner{
+    text-align:center;
+    margin-top: 200px;
+}
+#holidayIcon{
+    color: #37a591;
+}
+</style>
+
+<div class="container">
+
+    <h2 class="text-center mt-2">Mark Attendence</h2>
+
+    <form class="row" method="GET" action="{% url 'attendenceStudent' %}">
+        <div class="form-group col-5">
+            <label for=""> Admission Number</label>
+            <input type="text" class="form-control" name="add_no" id="" aria-describedby="helpId" placeholder="">
+            <small id="helpId" class="form-text text-muted">Marks Attendence By Admisson Number</small>
+        </div>
+        <div class="form-group col-5">
+            <label class="pr-1" for="">Class/Section:</label>
+            <select required name="class_room" class="form-control mr-2" id="class_name">
+                <option selected="true" disabled="disabled" value="a">Select</option>
+                {% for class_room in class_rooms %}
+                <option value='{{ class_room.classSection }}'>{{ class_room.classSection }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" id="submit" class="btn btn-primary my-auto">Submit</button>
+    </form>
+
+</div>
+
+{% if students %}
+<div class="container-fluid" id="student_main">
+    <div id="student-attendence">
+        <button class="btn btn-info float-right" id="holidayTrigger">Mark Holiday <i class="fa fa-plus"></i></button>
+            <form method="POST" id='holiday-form'>
+                {% csrf_token %}
+                <div class="form-group form-inline mx-auto col-md-4 col-sm-12 mt-5" id="holidayDiv">
+                    <label for="date-from" class="font-weight-bold float-left">holiday  </label>            
+                    <input type="date" class="form-control" id="holiday_Date" name="holidayDate">
+                    <button class="btn" id="holidaySubmit" >  <i class="fa fa-plus" id="holidayIcon"></i>  </button>
+                </div>
+            </form>
+        <form method="POST" id="attendenceForm">
+            {% csrf_token %}
+            <div class="form-group mt-3 col-md-3 col-sm-12 mx-auto">
+                <label for="username" class="font-weight-bold">Select Date:</label>
+                <input type="date" class="form-control" id="date_" aria-describedby="" name="date" required>
+            </div>
+            <table class="mb-5 table table-secondary table-striped">
+                <thead class="table-dark">
+                    <tr class="">
+                        <th scope="col">Name</th>
+                        <th scope="col">Roll Number</th>
+                        <th scope="col">Admission Number</th>
+                        <th scope="col">Class Section</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <th scope="row">{{ student.student.fullName}}</th>
+                        <td>{{ student.roll_number }}</td>
+                        <td>{{ student.student.admissionNumber }}</td>
+                        <td class="hclass">{{ student.classRoom.classSection }}</td>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name={{student.student.admissionNumber}} value="present">
+                                <label class="form-check-label">Present</label>
+                                <input class="form-check-input ml-2 " type="radio" name={{student.student.admissionNumber}} value="absent">
+                                <label class="form-check-label">Absent</label>
+                                <input class="form-check-input ml-2" type="radio" name={{student.student.admissionNumber}} value="leave">
+                                <label class="form-check-label">Leave</label>
+                                <input class="form-check-input ml-2" type="radio" name={{student.student.admissionNumber}} value="late">
+                                <label class="form-check-label">Late</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button class="btn btn-primary my-2" id="update_attendence">Update Attendence</button>
+            
+        </form>
+    </div>
+
+        <div id="spinner">
+            <div class="spinner-grow text-secondary" role="status"></div>
+            <div class="spinner-grow text-danger" role="status"></div>
+            <div class="spinner-grow text-secondary" role="status"></div>
+            <div class="spinner-grow text-warning" role="status"></div>
+        </div>
+</div>
+{% endif %}
+<script>
+
+    $(window).on("load", function(){
+        $('#spinner').css({'display' : 'block'});
+        setTimeout(function() {
+            $('#spinner').fadeOut();
+            $('#student-attendence').fadeIn();
+            z=$('#date').val();
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth()+1; //January is 0!
+            let yyyy = today.getFullYear();
+            if(dd<10){dd='0'+dd} 
+            if(mm<10){mm='0'+mm} 
+            today = yyyy+'-'+mm+'-'+dd;     
+            $('#date_').val(today);
+            $('#date_').attr('disabled', 'True');
+        }, 2000);
+    });
+    $('#holidayTrigger').on('click', function(e){
+        e.preventDefault();
+        if($('#holidayDiv').css('display') == 'none'){
+            $('#holidayDiv').fadeIn();
+            $('#holidayTrigger').html('Mark Attendence  <i class="fa fa-window-close"></i>');
+            $('#holidayTrigger').removeClass('btn-info');
+            $('#holidayTrigger').addClass('btn-danger');
+    
+        }
+        else if($('#holidayDiv').css('display') == 'block'){
+            $('#holidayDiv').fadeOut();
+            $('#holidayTrigger').removeClass('btn-danger');
+            $('#holidayTrigger').addClass('btn-info');
+            $('#holidayTrigger').html('Mark Attendence  <i class="fa fa-plus"></i>');
+            
+        }
+    });
+    function checkDate(){
+      
+    };
+
+    $('#update_attendence').on('click', function(e){
+        e.preventDefault();
+        let d = new Date();
+        if (d.getDay() == 0){
+            alert("Selected Date is Sunday!")
+        }
+        let radios = document.querySelectorAll('input[type="radio"]');
+        let labels = document.querySelectorAll('label.form-check-label');
+        const radioconst = (radios.length) / 4;
+        let radioinst = 0;
+        for(i = 0; i < radios.length; i+=4){
+            if(radios[i].checked || radios[i+1].checked || radios[i+2].checked || radios[i+3].checked){
+                labels[i].style.color = "#212529";
+                labels[i + 1].style.color = "#212529";
+                labels[i + 2].style.color = "#212529";
+                labels[i + 3].style.color = "#212529";
+                radioinst++;
+            }
+            else{
+                labels[i].style.color = "red";
+                labels[i + 1].style.color = "red";
+                labels[i + 2].style.color = "red";
+                labels[i + 3].style.color = "red";
+            }
+        }
+        if(radioinst == radioconst) 
+            $('#attendenceForm').submit();
+        else
+            alert('Please Fill all students Attendence');
+    });
+
+    $('#holidaySubmit').on('click', function(e){
+        e.preventDefault();
+        if($('#holiday_Date').val() == ''){
+            alert("Enter a Date");
+        }else{
+            $.ajax({
+                type: 'POST',
+                url: '/holiday/',
+                data: {
+                    student: 'student',
+                    holiday: $('#holiday_Date').val(),
+                    Hclass: $('.hclass').html(),
+                    csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val() ,
+                },
+                success:function(data){
+                    $('#holiday_Date').val('');
+                    alert('holiday marked Successfully!!');
+                }
+            })
+        }
+    });
+</script>
+{% endblock %}
+

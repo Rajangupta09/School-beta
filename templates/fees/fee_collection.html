@@ -1,0 +1,201 @@
+{% extends 'fees/fee_collection_filter.html' %}
+
+
+{% block mapping %}
+<style>
+    .details{
+        background-color:gainsboro;
+    }
+</style>
+<hr>
+<br>
+    <h3 class='text-center'>Fee Details</h3>
+    <br><br>
+<div class="details">
+    {% for parent in parent_info %}
+        {% for student in student %}
+            <div class="row">
+                <div class="col"><strong>  Student Name : {{ student.fullName }} </strong></div>
+
+                   <div class=" col text-right"><strong>Father Name: {{ parent.fatherName}} </strong>  </div>
+            </div>
+            <div class="row">
+                <div class="col"><strong>Class Section : {{ student.classSection }}</strong></div>
+                <div class="col">
+                    <div class="float-right"><strong>Mobile no: {{ parent.MobileNumber }} </strong> </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"><strong>Reg/Admission No. : {{ student.admissionNumber }}</strong></div>
+                <div class="col">
+                    <div class="float-right"><strong>Contact add. :  </strong> </div>
+                </div>
+            </div>
+
+
+        {% endfor %}
+    {% endfor %}
+</div>
+<!-- {% for cycle in cycle %} -->
+<h4 style="text-align: center;"> Fee cycle </h4>
+{% if cycle.cycle == 'monthly' %}
+<form method="GET">
+<div class="form-check form-check-inline">
+
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="6" name=month>
+    <label class="form-check-label" for="inlineCheckbox1" name=month> June </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="7" name=month>
+    <label class="form-check-label" for="inlineCheckbox1" name=month> July </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="8" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> August </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="9" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> September </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="10" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> October </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="11" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> November </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="12" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> December </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="1" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> Jan </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="2" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> Feb </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="3" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> March </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="4" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> April </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="5" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> May </label>
+<button type="submit" class="btn btn-primary mx-4">Submit</button>
+  </div>
+</form>
+  {% elif cycle.cycle == 'quarterly' %}
+  <form method="GET">
+<div class="form-check form-check-inline">
+
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="6-8" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> June-Aug </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="9-11" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> Sep-Nov </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="12-2" name=month>
+    <label class="form-check-label" for="inlineCheckbox1">  Dec-Feb </label>
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="3-5" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> March-May </label>
+    <button type="submit" class="btn btn-primary mx-4">Submit</button>
+</div>
+</form>
+{% elif cycle.cycle == 'yearly' %}
+<form method="GET">
+<div class="form-check form-check-inline">
+
+    <input class="form-check-input mx-2" type="checkbox" id="inlineCheckbox1" value="1-12" name=month>
+    <label class="form-check-label" for="inlineCheckbox1"> June-May </label>
+    <button type="submit" class="btn btn-primary mx-4">Submit</button>
+    </div>
+</form>
+  {% endif %}
+  {% endfor %}
+  <br>
+    <!-- <table class="mb-5 table table-primary table-striped">
+        <tbody>
+          <tr>
+              <th scope="col">Fee category</th>
+              <th scope="col">Payable amount</th>
+              <th scope="col">Submitting amount</th>
+          </tr>
+          {% for fee in fees %}
+            <tr>
+              <th scope="col">{{ fee.fee_configuration.fee_category.name }}</th>
+              <th scope="col">{{ fee.amount }}</th>
+              <th scope="col"></th>
+            </tr>
+          {% endfor %}
+        <tbody>
+    </table>
+    {{fees}} -->
+    <form method="POST" class="form-inline mt-4">
+        {% csrf_token %}
+            {% for detail, balance , disc in fee_details %}
+                <table class="mb-5 table table-primary table-striped">
+                    <tbody>
+                    <tr>
+                        <th scope="col">Fee category</th>
+                        <th scope="col">Payable amount</th>
+                        <th scope="col">Submitting amount</th>
+
+                    </tr>
+                    {% for fee in detail.0 %}
+                        <tr>
+                        <th scope="col">{{ fee.fee_configuration.fee_category.name }}</th>
+                        <th scope="col">{{ fee.amount }}</th>
+                        <th scope="col"></th>
+
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <th scope="col">Balance</th>
+                        <th scope="col">{{ balance }}</th>
+                        <th></th>
+                    </tr>
+
+                    <tr>
+                        <th scope="col">Total: </th>
+                        <th scope="col">{{ detail.1|add:balance }}</th>
+                        <th></th>
+                        <!-- <th scope="col"><input type="number" min='0' max="{{ detail.1|add:balance }}" name="deposit" ></th> -->
+                       
+                    </tr>
+                    <tr>
+                        <th scope="col">Discount : </th>
+                        <th scope="col">{{ disc.amount }}</th>
+                        <th scope="col"></th>
+                        <!--<th scope="col"><input type="number" min='0' max="{{ detail.1|add:balance }}" name="deposit" ></th> -->
+
+
+                    </tr>
+                    <tr>
+                        <th scope="col"> Grand Total: </th>
+                        <th scope="col">{{ grand_total }}</th>
+
+                        <th scope="col"><input type="number" min='0' max="{{ detail.1|add:balance }}" name="deposit" ></th>
+
+
+                    </tr>
+                    <tbody>
+                </table>
+            {% endfor %}
+            <!-- <button type="submit" class='btn btn-primary' name='fee_button'>Submit</button>
+
+ </form> -->
+        <hr>
+         <!-- <form method="POST" class="form-inline mt-4">
+             {% csrf_token %} -->
+            <div class="row">
+
+                    <label class="form-check-label" for="inlineCheckbox1" name="remarks">Remarks:</label>
+                  <input type="text" class="form-control">
+
+
+                    <label class="form-check-label mx-2" for="inlineCheckbox1" date-format="YYYY MM DD" name="sub_date">Submission date: </label>
+                    <input type="text" name="sub_date" placeholder="YYYY-MM-DD"  title="Enter a date in this formart YYYY-MM-DD"/>
+
+              </div>
+
+                <label class="mx-5" for="payment">Payment Method:</label>
+                <select name="session" class="form-control mr-2" id="session">
+                    <option selected="true" disabled="disabled" value="a">Select</option>
+                    <option value='Cash'>Cash</option>
+                    <option value='Cheque'>Cheque</option>
+                    <option value='Paytm'>Paytm</option>
+                    <option value='RTGS/NEFT'>RTGS/NEFT</option>
+
+                </select>
+
+                <button type="submit" class='btn btn-primary mt-3' name='fee_detail_btn'>Submit</button>
+            <!-- </div> -->
+          </form>
+          {% for student in student %}
+          <a href="{% url 'feeHeadMapping' student.admissionNumber   %}" style="align-items: right;"><button class="btn btn-primary mt-2">Configure Fees</button>
+          </a>
+          {% endfor %}
+{% endblock mapping %}

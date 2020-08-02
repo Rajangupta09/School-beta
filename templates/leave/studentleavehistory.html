@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Leave History
+{% endblock %}
+{% block content %}
+{% include "message.html" %}
+<div class="container-fluid">
+    <h2 class="text-center my-4">Leave History </h2>
+    <hr>
+    {% if history %}
+    {% for leave in history %}
+    <div class="container border border-dark mb-3 p-0 bg-dark pb-1 text-white">
+        <div class="row justify-content-around bg-secondary m-0 py-1">
+            <!-- <p class="col"><strong>Name</strong> {{leave.student.fullName}}</p>
+            <p class="col"><strong>Admission Number </strong> {{leave.student.admissionNumber}}</p> -->
+            <p class="col"><strong>Submit Date:</strong> {{leave.submit_date}}</p>
+            <p class="col"><strong> Leave Date:</strong> {{leave.date_from}}-{{leave.date_to}}</p>
+            <p class="col"><strong>Subject:</strong> {{leave.subject}}</p>
+            {% if leave.status == 'Submitted' %}
+            <p class="col" style="color:navy ;"><strong>Status:{{leave.status}} </strong> </p>
+            {% endif %}
+            {% if leave.status == 'Approved' %}
+            <p class="col" style="color:green ;"><strong>Status:{{leave.status}} </strong> </p>
+            {% endif %}
+            {% if leave.status == 'Rejected' %}
+            <p class="col" style="color:red ;"><strong>Status:{{leave.status}} </strong> </p>
+            {% endif %}
+        </div>
+        <p class="px-3 my-2"><strong>Description</strong>-{{leave.description}}</p>
+        {% if leave.leave_file %}
+            <a href="{{ leave.leave_file.url }}"><button class="btn btn-secondary">Open file </button> </a>
+            {% endif %}
+       </div>
+{% endfor %}
+{% else %}
+<h4 class="text-center">There are no leaves requests.</h4>
+{% endif %}
+    </div>
+{% endblock %}

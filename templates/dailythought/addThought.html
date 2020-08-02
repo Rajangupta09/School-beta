@@ -1,0 +1,82 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Thought
+{% endblock %}
+{% block content %}
+<style>
+p.quote_mark{
+    font-size: 35px;
+    text-align: left;
+    line-height: 20px;
+}
+ p{
+    text-align: center;
+    font-size: 20px;
+ }
+</style>
+{% include "message.html" %}
+      <div class="container mt-4">
+
+        <form action="{% url 'addThought'  %}" method="GET">
+            <div id="main">
+                <div class="form-group">
+                    <label for=""> <strong>Add Thought</strong></label>
+                    <textarea class="form-control" name="thought" id="" rows="3"></textarea>
+                </div>
+            </div>
+            <div id="new"></div>
+            <button class="btn float-right" id="more"><i class="fa fa-plus"></i></button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+            
+        </div>
+
+    {% if thoughts %}
+    <div class="container mx-auto ml-5">
+    {% for thought in thoughts %}
+    <hr>
+    <div class="quote-container ml-5 pl-5 mb-5 mt-5">
+        <span class="float-right"><btn class="btn btn-danger delete" data-id="{{thought.id}}"><i class="fa fa-trash"></i></button></span>
+    <p class="quote_mark"><b>“</b></p>
+    <h2 class="ml-4">{{thought.thought}}</h2>
+    </div>
+    {% endfor %}
+
+    </div>
+    {% endif %}
+
+    <script>
+    const d = document.getElementsByClassName('delete');
+
+    Array.from(d).forEach(element =>  {
+            element.addEventListener("click", function(){
+            var id = element.dataset.id;
+            confirm('Are you sure you want to delete?');
+            $.ajax({
+                type:'GET',
+                url:'/thought/',
+                data: {
+                    id: id
+                },
+                success:function(){
+                    alert('deleted Success fully');
+                },
+                error:function(error){
+                    alert('couldnot delete!!');
+                }
+
+            });
+
+        });
+    });
+
+
+
+    $('#more').on('click', function(e){
+        e.preventDefault();
+        let temp = $('#main').html();
+        $('#new').append(temp);
+    })
+    </script>
+
+{% endblock %}

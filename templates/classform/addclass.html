@@ -1,0 +1,255 @@
+{% extends "dashboard/base.html" %}
+{% block title %}
+Add Class
+{% endblock %}
+{% block content %}
+{% include "message.html" %}
+<div class="conatiner p-5">
+    <h3 class="">Add Class</h3>
+    <hr class="my-2">
+    <p class="lead">
+        <div class="conatiner">
+            <form method="POST" id="class-form" class="row">
+                {% csrf_token %}
+                <div class="form-group col-md-3">
+                    <label class="pr-1" for="">Class:</label>
+                    <input type="text" class="form-control" id="class-input" name="class" required>
+                    <div class="invalid-feedback">
+                        Please Enter a class.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="">Class Section</label>
+                    <input type="text" class="form-control" name="section" id="section-input" required>
+                    <div class="invalid-feedback">
+                        Please Enter a Section.
+                    </div>
+                </div>
+                    <div class="form-group col-md-3">
+                        <label class="pr-1" for="">Room No:</label>
+                        <input type="text" class="form-control" name="room_no">
+                        <div class="invalid-feedback">
+                            Please Enter a Roll no.
+                        </div>
+                    </div>
+                <div class="col-md-2">
+                    <button class="mt-4 btn btn-primary" type="submit" id="class-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </p>
+    
+    <div class="mt-5">
+        {% if Class %}
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>Class</th>
+                <th>Room No.:</th>
+            </tr>
+            {% for class in Class %}
+            <tr data-toggle="modal" data-target="#update" onclick="modal('{{class.classSection}}', '{{class.room_no}}')">
+                <td>{{class.classSection}}</td>
+                <td>{{class.room_no}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+
+<div id="update" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                            <h3 class="m-4 pr-1 " id="class_value">Class:</h3>
+                    <div class="container" id="model_body">
+                   </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+function modal(cval, rn){
+    $('#cedit').fadeIn();
+    $('#class_value').html('Class:  '+ cval + ' Room No.:  ' +rn);
+    $('#model_body').html(' <button class="btn btn-danger ml-4 float-right" id="class_edit" data-toggle="tooltip" title="Delete" onClick="deletesub(\'' + cval  + '\',\'' + rn + '\')"><i class="fa fa-trash"></i></button><button class="btn btn-warning float-right" id="class_edit" data-toggle="tooltip" title="EDIT" onClick="formsub(\'' + cval  + '\',\'' + rn + '\')"><i class="fa fa-file-alt"></i></button>')
+};
+
+function formsub(classs, rn){
+    clas=classs.split('-')
+    let form =`
+            <button type="button" class="close" onclick="reclose('` + classs + '\',\''+ rn +`')">&times;</button>
+        <form class="m-5" id="classEdit" method="POST">
+            {% csrf_token %}
+            <div class="form-group col-md-10">
+                <label>Class:</label>
+                <input type="text" class="form-control" name='classedit' id='classedit' value="`+ clas[0] +`">
+            </div>
+            <div class="form-group col-md-10">
+                <label>Section:</label>
+                <input type="text" class="form-control" name='secedit' id='secedit' value="`+ clas[1] +`">
+            </div>
+            <div class="form-group col-md-10">
+                <label>Room No.:</label>
+                <input type="text" class="form-control" name='roomedit' id='roomedit' value="`+ rn +`">
+            </div>
+            <div class="col-md-8 mx-auto mt-4">
+                <button class="btn btn-warning" id="updatebtn" onclick="event.preventDefault(); update('`+ classs +`');"><i class="fa fa-file-alt"> </i>  Update</button>
+                <button class="btn btn-danger ml-2" id="deletebtn" onClick="event.preventDefault(); deletesub('`+ classs +`');"><i class="fa fa-trash"></i> Delete</button>
+            </div>
+        </form>
+            ` ;
+    $('#model_body').html(form);
+};
+
+function reclose(cval, rn){
+    $('#model_body').html(' <button class="btn btn-danger ml-4 float-right" id="class_edit" data-toggle="tooltip" title="Delete" onClick="deletesub(\'' + cval  + '\',\'' + rn + '\')"><i class="fa fa-trash"></i></button><button class="btn btn-warning float-right" id="class_edit" data-toggle="tooltip" title="EDIT" onClick="formsub(\'' + cval  + '\',\'' + rn + '\')"><i class="fa fa-file-alt"></i></button>')
+};
+
+function update(preclass){
+    $('#updatebtn').addClass('btn-success');
+    $('#updatebtn').removeClass('btn-warning');
+    $('#updatebtn').html('<span class="spinner-grow spinner-grow-sm"></span>Updating..');
+    var newclass = $('#classedit').val();
+    var newsection = $('#secedit').val();
+    var newroom = $('#roomedit').val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/classForm/',
+        data:{
+            update : 'True',
+            oldclass : preclass,
+            newclass : newclass,
+            newsection : newsection,
+            newroom :newroom,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success:function(){
+            $('#updatebtn').html('Updated');
+            alert("Done please Refresh the page to see result!");
+        },
+        error:function(error){
+            $('#updatebtn').html('Update');
+            alert('Couldnot Update!');
+        }
+
+    });
+    return false;
+}
+function deletesub(oldclass){
+    confirm('Are you sure you want to delete Subject: ' + oldclass );
+    $('#deletebtn').html('<span class="spinner-grow spinner-grow-sm"></span>deleting..');
+    $.ajax({
+        type: 'POST',
+        url: '/classForm/',
+        data:{
+            delete : 'True',
+            oldclass : oldclass,
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        success:function(){
+            $('#deletebtn').html('Deleted');
+            alert("Done please Refresh the page to see result!");
+        },
+        error:function(error){
+            alert('Couldnot delete!');
+        }
+        
+    });
+    return false;
+}
+
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$('#class-form').submit(function(e){
+    e.preventDefault;
+    let str = $('#class-input').val();
+    let str_section = $('#section-input').val();
+        str1 = str.toUpperCase();
+        console.log(str)
+        console.log(str_section)
+        str_section = str_section.toUpperCase();
+        console.log(str_section)
+        if($.isNumeric(str)){
+            console.log("hello")
+            document.getElementById("class-form").submit();
+            }
+        else{
+            let num = char_to_int(str1.charAt(0));
+            if(num === 0){
+                let nu = char_to_char(str1);
+                if(nu === 0){
+                    alert("Error!");
+                    e.preventDefault();
+                }else{
+                document.getElementById("class-input").value = nu;
+                document.getElementById("class-form").submit();
+                }
+            }else{
+                let pre, curr;
+                for(let i = 1; i < str1.length; i++){
+                curr = char_to_int(str1.charAt(i));
+                pre = char_to_int(str1.charAt(i-1));
+                if(curr <= pre){
+                num += curr;
+                } else {
+                num = num - pre*2 + curr;
+                }
+                }
+                document.getElementById("class-input").value = num;
+                document.getElementById("class-form").submit();
+                }
+            }
+});
+
+
+function char_to_char(num){
+switch (num){
+case 'ONE': return 1;
+case 'TWO': return 2;
+case 'THREE': return 3;
+case 'FOUR': return 4;
+case 'FIVE': return 5;
+case 'SIX': return 6;
+case 'SEVEN': return 7;
+case 'EIGHT': return 8;
+case 'NINE': return 9;
+case 'TEN': return 10;
+case 'ELEVEN': return 11;
+case 'TWELVE': return 12;
+case 'NURSURY': return "NURSURY";
+case 'LKG': return LKG;
+case 'UKG': return UKG;
+default: return 0;
+}
+}
+
+
+function char_to_int(c){
+switch (c){
+case 'I': return 1;
+case 'V': return 5;
+case 'X': return 10;
+case 'L': return 50;
+case 'C': return 100;
+case 'D': return 500;
+case 'M': return 1000;
+default: return 0;
+}
+}
+
+</script>
+{% endblock %}
