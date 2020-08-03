@@ -1,0 +1,572 @@
+
+
+
+
+/*[ FONT ]*/
+
+@font-face {
+  font-family: Raleway-Regular;
+  src: url('../fonts/raleway/Raleway-Regular.ttf'); 
+}
+
+@font-face {
+  font-family: Raleway-Medium;
+  src: url('../fonts/raleway/Raleway-Medium.ttf'); 
+}
+
+@font-face {
+  font-family: Raleway-SemiBold;
+  src: url('../fonts/raleway/Raleway-SemiBold.ttf'); 
+}
+
+@font-face {
+  font-family: Raleway-Bold;
+  src: url('../fonts/raleway/Raleway-Bold.ttf'); 
+}
+
+* {
+	margin: 0px; 
+	padding: 0px; 
+	box-sizing: border-box;
+}
+
+body, html {
+	height: 100%;
+	font-family: Raleway-Regular, sans-serif;
+}
+
+a {
+	font-family: Raleway-Regular;
+	font-size: 14px;
+	line-height: 1.7;
+	color: #666666;
+	margin: 0px;
+	transition: all 0.4s;
+	-webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+}
+
+a:focus {
+	outline: none !important;
+}
+
+a:hover {
+	text-decoration: none;
+  color: #57b846;
+}
+
+
+p {
+	font-family: Raleway-Regular;
+	font-size: 14px;
+	line-height: 1.7;
+	color: #666666;
+	margin: 0px;
+}
+
+
+
+input {
+	outline: none;
+  border: none;
+}
+
+
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; }
+input:focus::-moz-placeholder { color:transparent; }
+input:focus:-ms-input-placeholder { color:transparent; }
+
+input::-webkit-input-placeholder { color: #999999;}
+input:-moz-placeholder { color: #999999;}
+input::-moz-placeholder { color: #999999;}
+input:-ms-input-placeholder { color: #999999;}
+
+label {
+  display: block;
+  margin: 0;
+}
+
+button {
+	outline: none !important;
+	border: none;
+	background: transparent;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+
+.txt1 {
+  font-family: Raleway-SemiBold;
+  font-size: 13px;
+  color: #555555;
+  line-height: 1.4;
+  padding-bottom: 11px;
+  text-transform: uppercase;
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-login100 {
+  width: 100%;  
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+
+.wrap-login100 {
+  width: 560px;
+  padding: 55px 85px 55px 85px;
+  background: #fff;
+  border-radius: 10px;
+  position: relative;
+}
+form{
+  --background: white;
+  --border: rgba(0, 0, 0, 0.125);
+  --borderDark: rgba(0, 0, 0, 0.25);
+  --borderDarker: rgba(0, 0, 0, 0.5);
+  --bgColorH: 0;
+  --bgColorS: 0%;
+  --bgColorL: 98%;
+  --fgColorH: 210;
+  --fgColorS: 50%;
+  --fgColorL: 38%;
+  --shadeDark: 0.3;
+  --shadeLight: 0.7;
+  --shadeNormal: 0.5;
+  --borderRadius: 0.125rem;
+  --highlight: #306090;
+  --skinH: 30;
+  --skinS: 100%;
+  --skinL: 87%;
+  --hair: rgb(180,70,60);
+}
+
+.login100-form {
+  width: 100%;
+  display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: flex;
+  justify-content: space-between;
+  -webkit-flex-wrap: wrap;
+	-moz-flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	-o-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+
+.login100-form-title {
+  font-family: Raleway-Medium;
+  font-size: 30px;
+  color: #555555;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-align: left;
+  padding-bottom: 32px;
+
+  width: 100%;
+  display: block;
+}
+
+.wrap-input100 {
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 2px;
+}
+
+
+.input100 {
+  font-family: Raleway-Medium;
+  color: #555555;
+  line-height: 1.2;
+  font-size: 18px;
+
+  display: block;
+  width: 100%;
+  background: transparent;
+  height: 55px;
+  padding: 0 25px 0 25px;
+}
+
+.check{
+  display: -webkit-box;
+	display: -webkit-flex;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: flex;
+	justify-content: space-between;
+	-ms-align-items: center;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 48px;
+}
+
+.focus-input100 {
+  position: absolute;
+  display: block;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  top: -1px;
+  left: -1px;
+  pointer-events: none;
+  border: 1px solid #57b846;
+  border-radius: 3px;
+
+  visibility: hidden;
+  opacity: 0;
+
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+
+  -webkit-transform: scaleX(1.1) scaleY(1.3);
+  -moz-transform: scaleX(1.1) scaleY(1.3);
+  -ms-transform: scaleX(1.1) scaleY(1.3);
+  -o-transform: scaleX(1.1) scaleY(1.3);
+  transform: scaleX(1.1) scaleY(1.3);
+}
+
+.input100:focus + .focus-input100 {
+  visibility: visible;
+  opacity: 1;
+
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+}
+
+.eff-focus-selection {
+  visibility: visible;
+  opacity: 1;
+
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+}
+
+
+.btn-show-pass {
+  font-size: 15px;
+  color: #999999;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 12px;
+  padding: 0 5px;
+  cursor: pointer;
+  -webkit-transition: background 0.4s;
+  -o-transition: background 0.4s;
+  -moz-transition: background 0.4s;
+  transition: background 0.4s;
+}
+
+.btn-show-pass:hover {
+  color: #57b846;
+}
+
+.btn-show-pass.active {
+  color: #57b846;
+}
+
+
+.input-checkbox100 {
+  display: none;
+}
+
+.label-checkbox100 {
+  font-family: Raleway-Regular;
+  font-size: 13px;
+  color: #999999;
+  line-height: 1.4;
+
+  display: block;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+}
+
+.label-checkbox100::before {
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 13px;
+  color: transparent;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  left: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.input-checkbox100:checked + .label-checkbox100::before {
+  color: #57b846;
+}
+
+
+.container-login100-form-btn {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.login100-form-btn {
+  font-family: Raleway-Bold;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.2;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  min-width: 150px;
+  height: 55px;
+  background-color: #333333;
+  border-radius: 27px;
+
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.login100-form-btn:hover {
+  background-color: #57b846;
+}
+@media (max-width: 576px) {
+  .wrap-login100 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/** PERSON */
+figure {
+  --skinH: 30;
+  --skinS: 100%;
+  --skinL: 87%;
+  --hair: rgb(180,70,60);
+  background: hsl(var(--fgColorH), calc(var(--fgColorS) * 2), 95%);
+  border: 1px solid rgba(0,0,0,0.0625);
+  border-radius: 50%;
+  height: 0;
+  margin: auto auto;
+  margin-bottom: 2rem;
+  order: 1;
+  padding-top: 38%;
+  position: relative;
+  width: 37%;
+  overflow: hidden;
+}
+
+figure div {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+figure .skin {
+  background: hsl(var(--skinH), var(--skinS), var(--skinL));
+  box-shadow: inset 0 0 3rem hsl(var(--skinH), var(--skinS), calc(var(--skinL) * 0.95));
+}
+
+figure .head {
+  top: 40%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  border-radius: 100%;
+  box-shadow: 0 -0.175rem 0 0.125rem var(--hair);
+}
+
+figure  .ears {
+  top: 47%;
+  left: 50%;
+  white-space: nowrap;
+}
+
+figure .ears::before,
+figure .ears::after {
+  content: "";
+  background: hsl(var(--skinH), var(--skinS), var(--skinL));
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  margin: 0 2.1rem;
+}
+
+figure .head .eyes {
+  top: 55%;
+  left: 50%;
+  white-space: nowrap;
+}
+
+@-webkit-keyframes blink {
+  0%, 90%, 100% {
+    height: 10px;
+  }
+  95% {
+    height: 0;
+  }
+}
+
+@keyframes blink {
+  0%, 90%, 100% {
+    height: 10px;
+  }
+  95% {
+    height: 0px;
+  }
+}
+
+figure .head .eyes::before,
+figure .head .eyes::after {
+  content: "";
+  background: var(--borderDarker);
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin: 0 0.5rem;
+  -webkit-animation: blink 5s infinite;
+  animation: blink 4s infinite;
+  transition: all 0.15s;
+}
+
+
+.btn-show-pass:focus ~ figure .head .eyes::after {
+  height: 0.125rem;
+  animation: none;
+}
+
+figure .head .mouth {
+  border: 0.125rem solid transparent;
+  border-bottom: 0.125rem solid var(--borderDarker);
+  width: 25%;
+  border-radius: 50%;
+  transition: all 0.5s
+}
+
+form:invalid figure .head .mouth {
+  top: 75%;
+  left: 50%;
+  height: 10%;
+}
+
+form:valid figure .head .mouth {
+  top: 60%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+}
+
+figure .hair {
+  top: 40%;
+  left: 50%;
+  width: 66.66%;
+  height: 66.66%;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+figure .hair::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--hair);
+  border-radius: 50%;
+  top: -60%;
+  left: -50%;
+  box-shadow: 4rem 0 var(--hair);
+}
+
+figure .neck {
+  width: 10%;
+  height: 40%;
+  top: 62%;
+  left: 50%;
+  background: hsl(var(--skinH), var(--skinS), calc(var(--skinL) * 0.94));
+  border-radius: 0 0 2rem 2rem;
+  box-shadow: 0 0.25rem var(--border);
+}
+
+figure .person-body {
+  width: 60%;
+  height: 100%;
+  border-radius: 50%;
+  background: red;
+  left: 50%;
+  top: 126%;
+  background: hsl(var(--fgColorH), var(--fgColorS), var(--fgColorL));
+}
+
+figure .shirt-1,
+figure .shirt-2 {
+  width: 12%;
+  height: 7%;
+  background: hsl(var(--bgColorH), var(--bgColorS), var(--bgColorL));
+  top: 76%;
+  left: 36.5%;
+  transform: skew(-10deg) rotate(15deg)
+}
+
+figure .shirt-2 {
+  left: 52.5%;
+  transform: skew(10deg) rotate(-15deg)
+}

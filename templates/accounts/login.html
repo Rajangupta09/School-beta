@@ -1,40 +1,104 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>Login</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>School Management System</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  </head>
-  <body>
-    {% include 'message.html' %}
+	<link rel="stylesheet" type="text/css" href="{% static 'login/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 
-    <div class="container-fluid">
-        <form method="post" action="{% url 'login' %}">
-        	{% csrf_token %}
+</head>
+<body>
+	{% if messages %}
+	<div class='message'>
+	{% for message in messages %}
+	  <div id="toast-container" class="toast-top-right">
+	  <div class="toast toast-{{message.tags}}" aria-live="polite" style="">
+	  <button type="button" class="toast-close-button" role="button">×</button>
+	  <div class="toast-message">{{ message }}</div>
+	  </div>
+	  </div>
+	{% endfor %}
+  </div>
+	<script>
+	  var m = document.getElementsByClassName("message");  
+	  setTimeout(function(){
+		 if (m && m.length) {
+			 m[0].classList.add('hide');
+		 }
+	  }, 3000);
+	  </script>
+	  {% endif %}
 
-            <div class="form-group">
-                <label for="username">User Name</label>
-                <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" name="password">
-            </div>
+<form method="POST"  id="login-form" class="login-form" autocomplete="off" role="main">
+	{% csrf_token %}
+  <div class="main">
+		<div class="container-login100">
+			<div class="wrap-login100 ">
+				<form class="login100-form validate-form">
+					<span class="login100-form-title">
+						<figure aria-hidden="true">
+							<div class="person-body"></div>
+							<div class="neck skin"></div>
+							<div class="head skin">
+							  <div class="eyes"></div>
+							  <div class="mouth"></div>
+							</div>
+							<div class="hair"></div>
+							<div class="ears"></div>
+							<div class="shirt-1"></div>
+							<div class="shirt-2"></div>
+						  </figure>
+					</span>
+				
+					<span class="txt1">
+						Username
+					</span>
+					<div class="wrap-input100 validate-input" data-validate = "Username is required" style="margin-bottom: 36px;">
+            <input class="input100" type="text" name="username" required>
+						<span class="focus-input100"></span>
+					</div>
+					
+					<span class="txt1">
+						Password
+					</span>
+					<div class="wrap-input100 validate-input" data-validate = "Password is required" style="margin-bottom: 12px;">
+						<span name="show-password" class="btn-show-pass">
+							<i class="fa fa-eye"></i>
+						</span>
+						<input class="input100" type="password" name="password" required >
+						<span class="focus-input100"></span>
+					</div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
+					<div class="check">
+						<div class="contact100-form-checkbox">
+							<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+							<label class="label-checkbox100" for="ckb1">
+								Remember me
+							</label>
+						</div>
+
+						<div>
+							<a href="#" class="txt3">
+								Forgot Password?
+							</a>
+						</div>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button type="submit" class="login100-form-btn">
+							Login
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+  
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+	<script src="{% static 'js/login.js' %}"></script>
+  
+</body>
 </html>
-
-	
 
