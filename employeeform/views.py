@@ -3,6 +3,10 @@
 """
 import csv, io
 from django.http import HttpResponse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+
 from datetime import date
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -14,6 +18,36 @@ from .models import Employee, Teacher, EmployeeDocuments, PermanentAddress, Curr
 import sys
 import pprint
 from cryptography.fernet import Fernet
+from .forms import *
+
+class EmployeeCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'employee/new.html'
+    form_class = EmployeeRegistrationForm
+    success_url = reverse_lazy('dashboard')
+    # def form_valid(self, form):
+    #     location = form.cleaned_data['location']  # <--- Add this line to get email value
+    #     print(location)
+    #     temp = Location.objects.filter(location__iexact=location)
+    #     if temp:
+    #         return redirect('location')
+    #     else:
+    #         return super(LocationCreateView, self).form_valid(form)
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super(LocationCreateView, self).get_context_data(**kwargs)
+    #     context['link']= ('location')
+    #     context['name'] = ('Location')
+    #     return context
+
+    # def get_success_url(self):
+    #     messages.add_message(
+    #         self.request,
+    #         messages.SUCCESS,
+    #         message="Location Added Successfully"
+    #     )
+    #     return super().get_success_url()
+
+
 @login_required
 def form(request):
     if(Employee.objects.count() == 0 ):

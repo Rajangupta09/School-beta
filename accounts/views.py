@@ -1,16 +1,19 @@
 """
   Handle login, signup and logout
 """
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth, messages
-from accounts.models import UserProfile
+from django.shortcuts import render, redirect, HttpResponseRedirect
+from accounts.models import *
+
 
 def login(request):
     """
     login user
     input: username and password
     """
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     if request.method == 'POST':
         user = auth.authenticate(
             username=request.POST['username'], password=request.POST['password'])

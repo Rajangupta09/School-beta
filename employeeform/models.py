@@ -8,16 +8,12 @@ from PIL import Image
 class Employee(models.Model):
     """Employee table"""
     empID = models.IntegerField(primary_key=True, default=0)
-    firstName = models.CharField(
-        max_length=20, blank=True, verbose_name='First Name')
-    lastName = models.CharField(
-        max_length=20, blank=True, verbose_name='Last Name')
-    fullName = models.CharField(
-        max_length=50, blank=True, verbose_name='Full Name')
+    firstName = models.CharField(max_length=20, blank=True, verbose_name='First Name')
+    lastName = models.CharField(max_length=20, blank=True, verbose_name='Last Name')
+    fullName = models.CharField(max_length=50, blank=True, verbose_name='Full Name')
     father_name = models.CharField(max_length=50, blank=True)
     mother_name = models.CharField(max_length=50, blank=True)
-    partnerName = models.CharField(
-        max_length=50, blank=True, verbose_name='Partner Name')
+    partnerName = models.CharField(max_length=50, blank=True, verbose_name='Partner Name')
     gender = models.CharField(max_length=20, blank=True)
     email = models.CharField(max_length=40, blank=True)
     currentAddress = models.CharField(
@@ -39,7 +35,6 @@ class Employee(models.Model):
 
     def __str__(self):
         return f"Name:{self.fullName}| Cateogry:{self.empCategory}| Emp.ID: {self.empID}"
-        # f'{self.empID}
 
 
 class CurrentAddress(models.Model):
@@ -87,7 +82,6 @@ class Teacher(models.Model):
 def user_directory_path(instance, filename):
     """file will be uploaded to given path"""
     return 'emp/{0}/{1}'.format(instance.employee.empID, filename)
-
 
 class EmployeeDocuments(models.Model):
     """ Employee Document Table"""

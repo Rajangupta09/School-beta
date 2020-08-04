@@ -1,0 +1,8 @@
+{% load crispy_forms_tags %}
+
+<form method="POST">
+                            <div class="row">
+                                {% csrf_token %}
+                                {% crispy form %}
+                            </div>
+                        </form>   

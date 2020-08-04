@@ -22,4 +22,5 @@ urlpatterns = [
     path('Permanent_Delete/<int:emp_id>', views.permanent_delete, name="permanentdelete"),
     path('Deactivate/<int:emp_id>/', views.deactivate, name="deactivate"),
     path('activate/<int:emp_id>/', views.activate, name="activate"),
+    path('new', views.EmployeeCreateView.as_view(), name="new"),
 ]

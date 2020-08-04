@@ -1,748 +1,781 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'dashboard/css/profile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css'%}" crossorigin="anonymous">
-    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
-    <!-- <script src="https://use.fontawesome.com/6d06da5f6a.js"></script> -->
-    <script src="{% static 'js/jquery-3.4.1-min.js'%}"></script>
-    <link href='https://fonts.googleapis.com/css?family=Dosis|Candal' rel='stylesheet' type='text/css'>
-    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'newsletter/css/newsletter.css' %}">
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css' rel='stylesheet'>
-    <title>{% block title %}Dashboard{% endblock %}</title>
+	{% load static%}
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>School Management System</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="{% static 'assets/img/icon.ico'%}" type="image/x-icon"/>
+
+	<!-- Fonts and icons -->
+	<script src="{% static 'assets/js/plugin/webfont/webfont.min.js'%}"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Lato:300,400,700,900"]},
+			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ["{% static 'assets/css/fonts.min.css'%}"]},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css'%}">
+	<link rel="stylesheet" href="{% static 'assets/css/atlantis.min.css'%}">
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="{% static 'assets/css/demo.css'%}">
 </head>
 <body>
-    <div class="page-wrapper chiller-theme toggled">
-        <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-            <i class="fas fa-bars fa-2x my-auto"></i>
-        </a>
-        <nav id="sidebar" class="sidebar-wrapper" style="margin-right: 0px; ">
-            <div class="sidebar-content">
-                <div class="sidebar-brand">
-                    <a href="{% url 'dashboard' %}">School ERP</a>
-                    <div id="close-sidebar">
-                        <i class="fas fa-arrow-left"></i>
-                    </div>
-                </div>
-                <!-- <div class="sidebar-header">
-                    <div class="user-pic">
-                        {% if user.userprofile.image %}
-                        <img class="img-responsive img-rounded" src="{{ user.userprofile.image.url }}" alt="User picture">
-                        {% else %}
-                        <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
-                        {% endif %}
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">
-                            <strong style="text-transform: capitalize;">{{request.user}}</strong>
-                        </span>
-                        <span class="user-role">Administrator</span>
-                        <span class="user-status">
-                            <i class="fa fa-circle"></i>
-                            <span>Online</span>
-                        </span>
-                    </div>
-                </div> -->
-                <div class="sidebar-menu">
-                    <ul>
-                        <li class="header-menu">
-                            <!-- <span>General</span> -->
-                        </li>
-                        {% if user.userprofile.user_type == "Admin" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fa fa-user"></i>
-                                <span>Employees</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'employeeForm' %}">Employee Registration
-                                        </a>
+	<div class="wrapper">
+		<div class="main-header">
+			<!-- Logo Header -->
+			<div class="logo-header" data-background-color="blue">
+				
+				<a href="index.html" class="logo">
+					<img src="{% static 'assets/img/logo.svg'%}" alt="navbar brand" class="navbar-brand">
+				</a>
+				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon">
+						<i class="icon-menu"></i>
+					</span>
+				</button>
+				<button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+				<div class="nav-toggle">
+					<button class="btn btn-toggle toggle-sidebar">
+						<i class="icon-menu"></i>
+					</button>
+				</div>
+			</div>
+			<!-- End Logo Header -->
+
+			<!-- Navbar Header -->
+			<nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+				
+				<div class="container-fluid">
+					<div class="collapse" id="search-nav">
+						<form class="navbar-left navbar-form nav-search mr-md-3">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button type="submit" class="btn btn-search pr-1">
+										<i class="fa fa-search search-icon"></i>
+									</button>
+								</div>
+								<input type="text" placeholder="Search ..." class="form-control">
+							</div>
+						</form>
+					</div>
+					<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+						<li class="nav-item toggle-nav-search hidden-caret">
+							<a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+								<i class="fa fa-search"></i>
+							</a>
+						</li>
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-envelope"></i>
+							</a>
+							<ul class="dropdown-menu messages-notif-box animated fadeIn" aria-labelledby="messageDropdown">
+								<li>
+									<div class="dropdown-title d-flex justify-content-between align-items-center">
+										Messages 									
+										<a href="#" class="small">Mark all as read</a>
+									</div>
+								</li>
+								<li>
+									<div class="message-notif-scroll scrollbar-outer">
+										<div class="notif-center">
+											<a href="#">
+												<div class="notif-img"> 
+													<img src="{% static 'assets/img/jm_denis.jpg'%}" alt="Img Profile">
+												</div>
+												<div class="notif-content">
+													<span class="subject">Jimmy Denis</span>
+													<span class="block">
+														How are you ?
+													</span>
+													<span class="time">5 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-img"> 
+													<img src="{% static 'assets/img/chadengle.jpg'%}" alt="Img Profile">
+												</div>
+												<div class="notif-content">
+													<span class="subject">Chad</span>
+													<span class="block">
+														Ok, Thanks !
+													</span>
+													<span class="time">12 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-img"> 
+													<img src="{% static 'assets/img/mlane.jpg'%}" alt="Img Profile">
+												</div>
+												<div class="notif-content">
+													<span class="subject">Jhon Doe</span>
+													<span class="block">
+														Ready for the meeting today...
+													</span>
+													<span class="time">12 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-img"> 
+													<img src="{% static 'assets/img/talha.jpg'%}" alt="Img Profile">
+												</div>
+												<div class="notif-content">
+													<span class="subject">Talha</span>
+													<span class="block">
+														Hi, Apa Kabar ?
+													</span>
+													<span class="time">17 minutes ago</span> 
+												</div>
+											</a>
+										</div>
+									</div>
+								</li>
+								<li>
+									<a class="see-all" href="javascript:void(0);">See all messages<i class="fa fa-angle-right"></i> </a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-bell"></i>
+								<span class="notification">4</span>
+							</a>
+							<ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+								<li>
+									<div class="dropdown-title">You have 4 new notification</div>
+								</li>
+								<li>
+									<div class="notif-scroll scrollbar-outer">
+										<div class="notif-center">
+											<a href="#">
+												<div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
+												<div class="notif-content">
+													<span class="block">
+														New user registered
+													</span>
+													<span class="time">5 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-icon notif-success"> <i class="fa fa-comment"></i> </div>
+												<div class="notif-content">
+													<span class="block">
+														Rahmad commented on Admin
+													</span>
+													<span class="time">12 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-img"> 
+													<img src="{% static 'assets/img/profile2.jpg'%}" alt="Img Profile">
+												</div>
+												<div class="notif-content">
+													<span class="block">
+														Reza send messages to you
+													</span>
+													<span class="time">12 minutes ago</span> 
+												</div>
+											</a>
+											<a href="#">
+												<div class="notif-icon notif-danger"> <i class="fa fa-heart"></i> </div>
+												<div class="notif-content">
+													<span class="block">
+														Farrah liked Admin
+													</span>
+													<span class="time">17 minutes ago</span> 
+												</div>
+											</a>
+										</div>
+									</div>
+								</li>
+								<li>
+									<a class="see-all" href="javascript:void(0);">See all notifications<i class="fa fa-angle-right"></i> </a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+								<i class="fas fa-layer-group"></i>
+							</a>
+							<div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+								<div class="quick-actions-header">
+									<span class="title mb-1">Quick Actions</span>
+									<span class="subtitle op-8">Shortcuts</span>
+								</div>
+								<div class="quick-actions-scroll scrollbar-outer">
+									<div class="quick-actions-items">
+										<div class="row m-0">
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-file-1"></i>
+													<span class="text">Generated Report</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-database"></i>
+													<span class="text">Create New Database</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-pen"></i>
+													<span class="text">Create New Post</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-interface-1"></i>
+													<span class="text">Create New Task</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-list"></i>
+													<span class="text">Completed Tasks</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-file"></i>
+													<span class="text">Create New Invoice</span>
+												</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="nav-item dropdown hidden-caret">
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+								<div class="avatar-sm">
+									<img src="{% static 'assets/img/profile.jpg'%}" alt="..." class="avatar-img rounded-circle">
+								</div>
+							</a>
+							<ul class="dropdown-menu dropdown-user animated fadeIn">
+								<div class="dropdown-user-scroll scrollbar-outer">
+									<li>
+										<div class="user-box">
+											<div class="avatar-lg"><img src="{% static 'assets/img/profile.jpg'%}" alt="image profile" class="avatar-img rounded"></div>
+											<div class="u-text">
+												<h4>Hizrian</h4>
+												<p class="text-muted">hello@example.com</p><a href="profile.html" class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">My Profile</a>
+										<a class="dropdown-item" href="#">My Balance</a>
+										<a class="dropdown-item" href="#">Inbox</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">Account Setting</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">Logout</a>
+									</li>
+								</div>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<!-- End Navbar -->
+		</div>
+
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2">			
+			<div class="sidebar-wrapper scrollbar scrollbar-inner">
+				<div class="sidebar-content">
+					<div class="user">
+						<div class="avatar-sm float-left mr-2">
+							<img src="{% static 'assets/img/profile.jpg'%}" alt="..." class="avatar-img rounded-circle">
+						</div>
+						<div class="info">
+							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+									Hizrian
+									<span class="user-level">Administrator</span>
+									<span class="caret"></span>
+								</span>
+							</a>
+							<div class="clearfix"></div>
+
+							<div class="collapse in" id="collapseExample">
+								<ul class="nav">
+									<li>
+										<a href="#profile">
+											<span class="link-collapse">My Profile</span>
+										</a>
+									</li>
+									<li>
+										<a href="#edit">
+											<span class="link-collapse">Edit Profile</span>
+										</a>
+									</li>
+									<li>
+										<a href="#settings">
+											<span class="link-collapse">Settings</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul class="nav nav-item">
+						{% if user.userprofile.user_type == "Admin" %}
+						<li class="nav-item active">
+							<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
+								<i class="fas fa-home"></i>
+								<p>Employee's</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="dashboard">
+								<ul class="nav nav-collapse">
+									<li>
+                                        <a href="{% url 'employeeForm' %}"><span class="sub-item">Employee Registration
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'updateEmpInfo' %}">Employee Update</a>
+                                        <a href="{% url 'updateEmpInfo' %}"><span class="sub-item">Employee Update</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'empSearchPage' %}">Search Employees</a>
+                                        <a href="{% url 'empSearchPage' %}"><span class="sub-item">Search Employees</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'emptrash' %}">Deleted Employees</a>
+                                        <a href="{% url 'emptrash' %}"><span class="sub-item">Deleted Employees</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'empCredentials' %}">Employee Credentials</a>
+                                        <a href="{% url 'empCredentials' %}"><span class="sub-item">Employee Credentials</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'empimport' %}">Employee Bulk Upload</a>
+                                        <a href="{% url 'empimport' %}"><span class="sub-item">Employee Bulk Upload</span></a>
                                     </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% endif %}
-                {% if user.userprofile.user_type != "Driver" %}
-                    {% if user.userprofile.user_type != "Watchman" %}
+								</ul>
+							</div>
+						</li>
+						{% endif %}
+						{% if user.userprofile.user_type != "Driver" %}
+                    	{% if user.userprofile.user_type != "Watchman" %}
                         {% if userprofile.user_type != "Student" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="far fa-user-circle"></i>
-                                <span>Students</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    {% if user.userprofile.user_type == "Teacher" %}
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#base">
+								<i class="fas fa-layer-group"></i>
+								<p>Student</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="base">
+								<ul class="nav nav-collapse">
+									{% if user.userprofile.user_type == "Teacher" %}
                                     <li>
-                                        <a href="{% url 'studentList' %}">Check Student Details</a>
+                                        <a href="{% url 'studentList' %}"><span class="sub-item">Check Student Details</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Admin" %}
                                     <li>
-                                        <a href="{% url 'recordForm' %}">Student Registration</a>
+                                        <a href="{% url 'recordForm' %}"><span class="sub-item">Student Registration</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'updateInfo' %}">Student Update</a>
+                                        <a href="{% url 'updateInfo' %}"><span class="sub-item">Student Update</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'searchPage' %}">Search Students</a>
+                                        <a href="{% url 'searchPage' %}"><span class="sub-item">Search Students</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'stutrash' %}">Deleted Student</a>
+                                        <a href="{% url 'stutrash' %}"><span class="sub-item">Deleted Student</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'studentCredentials' %}">Students Credentials</a>
+                                        <a href="{% url 'studentCredentials' %}"><span class="sub-item">Students Credentials</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'uploadExcelData' %}">Bulk Upload </a>
+                                        <a href="{% url 'uploadExcelData' %}"><span class="sub-item">Bulk Upload </span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Accountant" %}
                                     <li>
-                                        <a href="{% url 'recordForm' %}">Student Registration</a>
+                                        <a href="{% url 'recordForm' %}"><span class="sub-item">Student Registration</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'updateInfo' %}">Student Update</a>
+                                        <a href="{% url 'updateInfo' %}"><span class="sub-item">Student Update</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'searchPage' %}">Search Students</a>
+                                        <a href="{% url 'searchPage' %}"><span class="sub-item">Search Students</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'stutrash' %}">Deleted Student</a>
+                                        <a href="{% url 'stutrash' %}"><span class="sub-item">Deleted Student</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'studentCredentials' %}">Students Credentials</a>
+                                        <a href="{% url 'studentCredentials' %}"><span class="sub-item">Students Credentials</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'uploadExcelData' %}">Bulk Upload </a>
+                                        <a href="{% url 'uploadExcelData' %}"><span class="sub-item">Bulk Upload </span></a>
                                     </li>
                                     {% endif %}
-                                </ul>
-                            </div>
-                        </li>
+								</ul>
+							</div>
+						</li>
                         {% endif %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fa fa-file-alt"></i>
-                                <span>Notice/Home/Syllab..</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    {% if user.userprofile.user_type == "Student" %}
+                        {% endif %}
+                        {% endif %}
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#sidebarLayouts">
+								<i class="fas fa-th-list"></i>
+								<p>Notice / Home / Syllab...</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="sidebarLayouts">
+								<ul class="nav nav-collapse">
+									{% if user.userprofile.user_type == "Student" %}
                                     <li>
-                                        <a href="{% url 'checkStudentNotice' %}">Check Personal Notice
-                                        </a>
+                                        <a href="{% url 'checkStudentNotice' %}"><span class="sub-item">Check Personal Notice
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'checkClassNotice' %}">Check Class Notice
-                                        </a>
+                                        <a href="{% url 'checkClassNotice' %}"><span class="sub-item">Check Class Notice
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'studentClassHomework' %}">Check Homework
-                                        </a>
+                                        <a href="{% url 'studentClassHomework' %}"><span class="sub-item">Check Homework
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'checkSyllabus' %}">Check Syllabus
-                                        </a>
+                                        <a href="{% url 'checkSyllabus' %}"><span class="sub-item">Check Syllabus
+                                        </span></a>
                                     </li>
 
                                     {% else %}
                                     <li>
-                                        <a href="{% url 'noticeHome' %}">Notice to Class
-                                        </a>
+                                        <a href="{% url 'noticeHome' %}"><span class="sub-item">Notice to Class
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'searchStudent' %}">Notice to Student</a>
+                                        <a href="{% url 'searchStudent' %}"><span class="sub-item">Notice to Student</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'homeworkHome' %}">Home Work</a>
+                                        <a href="{% url 'homeworkHome' %}"><span class="sub-item">Home Work</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'syllabus' %}">Add Syllabus
-                                        </a>
+                                        <a href="{% url 'syllabus' %}"><span class="sub-item">Add Syllabus
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'pastNoticeClass' %}">Past Notice Class
-                                        </a>
+                                        <a href="{% url 'pastNoticeClass' %}"><span class="sub-item">Past Notice Class
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'pastNoticeStudent' %}">Past Notice Student
-                                        </a>
+                                        <a href="{% url 'pastNoticeStudent' %}"><span class="sub-item">Past Notice Student
+                                        </span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'pastHomeWork' %}">Past HomeWork
-                                        </a>
+                                        <a href="{% url 'pastHomeWork' %}"><span class="sub-item">Past HomeWork
+                                        </span></a>
                                     </li>
                                     {% endif %}
-                                </ul>
-                            </div>
-                        </li>
-                    {% endif %}
-                {% endif %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fa fa-chart-line"></i>
-                                <span>Attendence</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    {% if user.userprofile.user_type == "Admin" %}
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#forms">
+								<i class="fas fa-pen-square"></i>
+								<p>Attendence</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="forms">
+								<ul class="nav nav-collapse">
+									{% if user.userprofile.user_type == "Admin" %}
                                     <li>
-                                        <a href="{% url 'attendenceStudent' %}">Student Attendence</a>
+                                        <a href="{% url 'attendenceStudent' %}"><span class="sub-item">Student Attendence</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'piechartStudent' %}">Student Attendence Report</a>
+                                        <a href="{% url 'piechartStudent' %}"><span class="sub-item">Student Attendence Report</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'StudentReport' %}">Student Attendence Report (Admin)</a>
+                                        <a href="{% url 'StudentReport' %}"><span class="sub-item">Student Attendence Report (Admin)</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'attendenceEmployee' %}">Employee Attendence</a>
+                                        <a href="{% url 'attendenceEmployee' %}"><span class="sub-item">Employee Attendence</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'piechartTeacher' %}">Employee Attendence Report</a>
+                                        <a href="{% url 'piechartTeacher' %}"><span class="sub-item">Employee Attendence Report</span></a>
                                     </li>
                                      <li>
-                                        <a href="{% url 'report' %}">Employee Attendence Report Admin</a>
+                                        <a href="{% url 'report' %}"><span class="sub-item">Employee Attendence Report Admin</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Student" %}
                                     <li>
-                                        <a href="{% url 'piechartStudent' %}">Check Attendence</a>
+                                        <a href="{% url 'piechartStudent' %}"><span class="sub-item">Check Attendence</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Driver" %}
                                     <li>
-                                        <a href="{% url 'attendenceEmployee' %}">Employee Attendence</a>
+                                        <a href="{% url 'attendenceEmployee' %}"><span class="sub-item">Employee Attendence</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Watchman" %}
                                     <li>
-                                        <a href="{% url 'attendenceEmployee' %}">Employee Attendence</a>
+                                        <a href="{% url 'attendenceEmployee' %}"><span class="sub-item">Employee Attendence</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Accountant" %}
                                     <li>
-                                        <a href="{% url 'attendenceEmployee' %}">Employee Attendence</a>
+                                        <a href="{% url 'attendenceEmployee' %}"><span class="sub-item">Employee Attendence</span></a>
                                     </li>
                                     {% else %}
                                     <li>
-                                        <a href="{% url 'attendenceStudent' %}">Student Attendence</a>
+                                        <a href="{% url 'attendenceStudent' %}"><span class="sub-item">Student Attendence</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'piechartTeacher' %}">Check Attendence</a>
+                                        <a href="{% url 'piechartTeacher' %}"><span class="sub-item">Check Attendence</span></a>
                                     </li>
                                     {% endif %}
-                                </ul>
-                            </div>
-                        </li>
-            {% if user.userprofile.user_type != "Driver" %}
-                {% if user.userprofile.user_type != "Watchman" %}
-                    {% if user.userprofile.user_type != "Accountant" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-chart-area"></i>
-                                <span>Marks</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    {% if user.userprofile.user_type == "Teacher" %}
+								</ul>
+							</div>
+						</li>
+						{% if user.userprofile.user_type != "Driver" %}
+                		{% if user.userprofile.user_type != "Watchman" %}
+                    	{% if user.userprofile.user_type != "Accountant" %}
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#tables">
+								<i class="fas fa-table"></i>
+								<p>Marks</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="tables">
+								<ul class="nav nav-collapse">
+									 {% if user.userprofile.user_type == "Teacher" %}
                                     <li>
-                                        <a href="{% url 'addExamForm' %}">Add Exam</a>
+                                        <a href="{% url 'addExamForm' %}"><span class="sub-item">Add Exam</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'examMapping' %}">Exam Mapping</a>
+                                        <a href="{% url 'examMapping' %}"><span class="sub-item">Exam Mapping</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'addExamType' %}">Exam Type</a>
+                                        <a href="{% url 'addExamType' %}"><span class="sub-item">Exam Type</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'addMarks' %}">Add Marks</a>
+                                        <a href="{% url 'addMarks' %}"><span class="sub-item">Add Marks</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'reportStudent' %}">Student Report</a>
+                                        <a href="{% url 'reportStudent' %}"><span class="sub-item">Student Report</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'reportClass' %}">Class Report</a>
+                                        <a href="{% url 'reportClass' %}"><span class="sub-item">Class Report</span></a>
                                     </li>
                                     {% elif user.userprofile.user_type == "Student" %}
                                     <li>
-                                        <a href="{% url 'studentMarksFilter' %}">Check Marks</a>
+                                        <a href="{% url 'studentMarksFilter' %}"><span class="sub-item">Check Marks</span></a>
                                     </li>
                                     {% else %}
                                         <li>
-                                        <a href="{% url 'addExamForm' %}">Add Exam</a>
+                                        <a href="{% url 'addExamForm' %}"><span class="sub-item">Add Exam</span></a>
                                     </li>
                                      <li>
-                                        <a href="{% url 'addExamType' %}">Exam Type</a>
+                                        <a href="{% url 'addExamType' %}"><span class="sub-item">Exam Type</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'examMapping' %}">Exam Mapping</a>
+                                        <a href="{% url 'examMapping' %}"><span class="sub-item">Exam Mapping</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'addMarks' %}">Marks Home</a>
+                                        <a href="{% url 'addMarks' %}"><span class="sub-item">Marks Home</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'marksheet' %}">Marksheet</a>
+                                        <a href="{% url 'marksheet' %}"><span class="sub-item">Marksheet</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'addskills' %}">Add Skill</a>
+                                        <a href="{% url 'addskills' %}"><span class="sub-item">Add Skill</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'skills' %}">Add Student Skill</a>
+                                        <a href="{% url 'skills' %}"><span class="sub-item">Add Student Skill</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'reportClass' %}">Class Report</a>
+                                        <a href="{% url 'reportClass' %}"><span class="sub-item">Class Report</span></a>
                                     </li>
                                     <li>
-                                        <a href="{% url 'reportCard' %}">Report Card</a>
+                                        <a href="{% url 'reportCard' %}"><span class="sub-item">Report Card</span></a>
                                     </li>
                                     {% endif %}
-                                </ul>
-                            </div>
-                        </li>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-                        {% if user.userprofile.user_type == "Student" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-bus"></i>
-                                <span>Transport</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'getStudentRoute' %}">Transport Route</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% endif %}
-                        {% if user.userprofile.user_type == "Admin" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                            <i class="fas fa-building"></i>
-                                <span>Class-Rooms</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'addClass' %}">Add ClassRoom</a>
-                                    </li>
-                                     <li>
-                                        <a href="{% url 'addsubject' %}">Add Subject</a>
-                                    </li>
+								</ul>
+							</div>
+						</li>
+						{% endif %}
+                		{% endif %}
+            			{% endif %}
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#maps">
+								<i class="fas fa-map-marker-alt"></i>
+								<p>Maps</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="maps">
+								<ul class="nav nav-collapse">
+									<li>
+										<a href="maps/jqvmap.html">
+											<span class="sub-item">JQVMap</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#charts">
+								<i class="far fa-chart-bar"></i>
+								<p>Charts</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="charts">
+								<ul class="nav nav-collapse">
+									<li>
+										<a href="charts/charts.html">
+											<span class="sub-item">Chart Js</span>
+										</a>
+									</li>
+									<li>
+										<a href="charts/sparkline.html">
+											<span class="sub-item">Sparkline</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a href="widgets.html">
+								<i class="fas fa-desktop"></i>
+								<p>Widgets</p>
+								<span class="badge badge-success">4</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#submenu">
+								<i class="fas fa-bars"></i>
+								<p>Menu Levels</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="submenu">
+								<ul class="nav nav-collapse">
+									<li>
+										<a data-toggle="collapse" href="#subnav1">
+											<span class="sub-item">Level 1</span>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse" id="subnav1">
+											<ul class="nav nav-collapse subnav">
+												<li>
+													<a href="#">
+														<span class="sub-item">Level 2</span>
+													</a>
+												</li>
+												<li>
+													<a href="#">
+														<span class="sub-item">Level 2</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li>
+										<a data-toggle="collapse" href="#subnav2">
+											<span class="sub-item">Level 1</span>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse" id="subnav2">
+											<ul class="nav nav-collapse subnav">
+												<li>
+													<a href="#">
+														<span class="sub-item">Level 2</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+									<li>
+										<a href="#">
+											<span class="sub-item">Level 1</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- End Sidebar -->
 
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                            <i class="fas fa-table"></i>
-                                <span>TimeTable</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'addTimeTableDetail' %}">Add TimeTable Detail</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'viewTimeTableDetialsList' %}">View TimeTable Details</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="far fa-credit-card"></i>
-                                <span>Fees</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'collectFee' %}">Collect Fee</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCategories' %}">Fee Categories</a>
-                                    </li>
-                                    <li>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'studentDiscounts' %}">Student Discount</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCycles' %}">Fee Cycle</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeConfigurations' %}">Fee Configuration</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addFine' %}">Fine</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addFeeClass' %}">Class Fee Collection</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'searchDefaulter' %}">Search Defaulter</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCollectionReportfilter' %}">Fee Collection Report</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-bus"></i>
-                                <span>Transport</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'addVehicle' %}">Add Vehicle</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'vehicleList' %}">Vehicle List</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'driverList' %}">Driver</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'markRouteAttendenceFilter' %}">Rout Wise Attendence</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeAttendenceListFilter' %}">Rout Attendence List</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeList' %}">Routes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeReport' %}">Routes Report</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-user"></i>
-                                <span>Visitors</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'visitorForm' %}">Add Visitor</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'visitorList' %}">Visitor List</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="far fa-images"></i>
-                                <span>Gallery</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'addAlbum' %}">Add Album</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addPhoto' %}">Add Photo</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addVideo' %}">Add Video</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'gallery' %}">Gallery</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% elif user.userprofile.user_type == "Accountant" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="far fa-credit-card"></i>
-                                <span>Fees</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'collectFee' %}">Collect Fee</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCategories' %}">Fee Categories</a>
-                                    </li>
-                                    <li>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'studentDiscounts' %}">Student Discount</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCycles' %}">Fee Cycle</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeConfigurations' %}">Fee Configuration</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addFine' %}">Fine</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'addFeeClass' %}">Class Fee Collection</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'searchDefaulter' %}">Search Defaulter</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'feeCollectionReportfilter' %}">Fee Collection Report</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% elif user.userprofile.user_type == "Watchman" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-user"></i>
-                                <span>Visitors</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'visitorForm' %}">Add Visitor</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'visitorList' %}">Visitor List</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% elif user.userprofile.user_type == "Driver" %}
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-bus"></i>
-                                <span>Transport</span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    <li>
-                                        <a href="{% url 'addVehicle' %}">Add Vehicle</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'vehicleList' %}">Vehicle List</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'driverList' %}">Driver</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'markRouteAttendenceFilter' %}">Rout Wise Attendence</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeAttendenceListFilter' %}">Rout Attendence List</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeList' %}">Routes</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'routeReport' %}">Routes Report</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        {% endif %}
-
-                        <li class="sidebar-dropdown">
-                            <a href="#">
-                                <i class="fas fa-check-square"></i></i>
-                                <span>Leave</span>
-                                <span class="badge badge-primary badge-pill"> {{ count }} </span>
-                            </a>
-                            <div class="sidebar-submenu">
-                                <ul>
-                                    {% if user.userprofile.user_type == "Student" %}
-                                    <li>
-                                        <a href="{% url 'studentLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'leave_history' %}">Leave Request History</a>
-                                    </li>
-                                    {% elif user.userprofile.user_type == "Accountant" %}
-                                    <li>
-                                        <a href="{% url 'employeeLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'employee_leave_history' %}"> Your Leave Request History</a>
-                                    </li>
-                                    {% elif user.userprofile.user_type == "Watchman" %}
-                                    <li>
-                                        <a href="{% url 'employeeLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'employee_leave_history' %}"> Your Leave Request History</a>
-                                    </li>
-                                    {% elif user.userprofile.user_type == "Driver" %}
-                                    <li>
-                                        <a href="{% url 'employeeLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'employee_leave_history' %}"> Your Leave Request History</a>
-                                    </li>
-                                    {% elif user.userprofile.user_type == "Admin" %}
-                                    <li>
-                                        <a href="{% url 'employeeLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'viewEmployeeLeaves' %}">Approve/Reject Leaves</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'all_employee_leave_history' %}">Leave Requests History</a>
-                                    </li>
-                                    {% else %}
-                                    <li>
-                                        <a href="{% url 'viewStudentLeaves' %}">Approve/Reject Leaves</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'employeeLeave' %}">Add Leave</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'all_leave_history' %}">Leave Requests History</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'employee_leave_history' %}"> Your Leave Request History</a>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </li>
-
-                        {% if user.userprofile.user_type == "Admin" %}
-                        <li class="header-menu">
-                            <span>Others</span>
-                        </li>
-                        <li>
-                            <a href="{% url 'addNewsletter' %}">
-                                <i class="fa fa-book"></i>
-                                <span>Add Newsletter</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'addThought' %}">
-                                <i class="fa fa-quote-left"></i>
-                                <span>Add Thought</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'addSchoolInfo' %}">
-                                <i class="fa fa-info"></i>
-                                <span>Add School Info</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'addHoliday' %}">
-                                <i class="fa fa-calendar"></i>
-                                <span>Add Holdiay</span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-                <!-- sidebar-menu  -->
-            </div>
-            <!-- sidebar-content  -->
-            <div class="sidebar-footer">
-                <a href="{% url 'userProfile' %}">
-                    <i class="fa fa-cog"></i>
-                </a>
-                <a href="{% url 'logout' %}">
-                    <i class="fa fa-power-off"></i>
-                </a>
-            </div>
-        </nav>
-        <!-- sidebar-wrapper  -->
-        <main class="page-content" style="padding-top: 0;">
-            <div class="container-fluid" style="padding-left: 0px; padding-right:0px; padding-top:0px;">
-                <nav class="d-flex justify-content-end">
-                    <!-- <h2 class=" text-white ml-5">School ERP</h2> -->
-                    <!-- <div class="ml-md-auto d-flex justify-content-around"> -->
-                        <a href="{% url 'userProfile' %}" class="text-white my-auto ">
-                            <!-- <h6 class="text-white my-auto mr-3">My Profile</h6> -->
-                            <div class="user-pic">
-                                <span class="user-name text-white my-auto mr-2" style="text-transform: capitalize;">    {{request.user}}
-                                </span>
-                                {% if user.userprofile.image %}
-                                <img class="img-responsive img-rounded" src="{{ user.userprofile.image.url }}" alt="User picture">
-                                {% else %}
-                                <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
-                                {% endif %}
-                            </div>
-
-                        </a>
-                        <a href="{% url 'logout' %}" class="text-white my-auto ml-4">
-                            <h6 class="text-white my-auto mr-3"><i class="fas fa-sign-out-alt"></i></h6>
-                        </a>
-                    <!-- </div> -->
-                </nav>
-                {% block content %}
+		<div class="main-panel">
+			<div class="content">
+				{% block content %}
                 {% endblock content %}
-        </main>
-        <!-- page-content" -->
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script>
-        $(".sidebar-dropdown > a").click(function() {
-            $(".sidebar-submenu").slideUp(200);
-            if (
-                $(this)
-                .parent()
-                .hasClass("active")
-            ) {
-                $(".sidebar-dropdown").removeClass("active");
-                $(this)
-                    .parent()
-                    .removeClass("active");
-            } else {
-                $(".sidebar-dropdown").removeClass("active");
-                $(this)
-                    .next(".sidebar-submenu")
-                    .slideDown(200);
-                $(this)
-                    .parent()
-                    .addClass("active");
-            }
-        });
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Perro's Inovation
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Help
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Licenses
+								</a>
+							</li>
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2018, made with <i class="fa fa-heart heart text-danger"></i> by <a href="#">Perro's Innovation</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+		<!-- End Custom template -->
+	</div>
+	<!--   Core JS Files   -->
+	<script src="{% static 'assets/js/core/jquery.3.2.1.min.js'%}"></script>
+	<script src="{% static 'assets/js/core/popper.min.js'%}"></script>
+	<script src="{% static 'assets/js/core/bootstrap.min.js'%}"></script>
 
-        $("#close-sidebar").click(function() {
-            $(".page-wrapper").removeClass("toggled");
-        });
-        $("#show-sidebar").click(function() {
-            $(".page-wrapper").addClass("toggled");
-        });
-        $(document).ready(function() {
-            // show the alert
-            setTimeout(function() {
-                $(".alert").alert('close');
-            }, 3000);
-        });
-    </script>
+	<!-- jQuery UI -->
+	<script src="{% static 'assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js'%}"></script>
+	<script src="{% static 'assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js'%}"></script>
+
+	<!-- jQuery Scrollbar -->
+	<script src="{% static 'assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js'%}"></script>
+
+
+	<!-- Chart JS -->
+	<script src="{% static 'assets/js/plugin/chart.js/chart.min.js'%}"></script>
+
+	<!-- jQuery Sparkline -->
+	<script src="{% static 'assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js'%}"></script>
+
+	<!-- Chart Circle -->
+	<script src="{% static 'assets/js/plugin/chart-circle/circles.min.js'%}"></script>
+
+	<!-- Datatables -->
+	<script src="{% static 'assets/js/plugin/datatables/datatables.min.js'%}"></script>
+
+	<!-- Bootstrap Notify -->
+	<script src="{% static 'assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js'%}"></script>
+
+	<!-- jQuery Vector Maps -->
+	<script src="{% static 'assets/js/plugin/jqvmap/jquery.vmap.min.js'%}"></script>
+	<script src="{% static 'assets/js/plugin/jqvmap/maps/jquery.vmap.world.js'%}"></script>
+
+	<!-- Sweet Alert -->
+	<script src="{% static 'assets/js/plugin/sweetalert/sweetalert.min.js'%}"></script>
+
+	<!-- Atlantis JS -->
+	<script src="{% static 'assets/js/atlantis.min.js'%}"></script>
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
 </body>
-
 </html>
