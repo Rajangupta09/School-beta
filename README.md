@@ -3,7 +3,7 @@
 ## Clone the project to your system
 
 ```console
-git clone https://github.com/Rajangupta09/School.git
+git clone https://github.com/Rajangupta09/School-beta.git
 ```
 
 ## Change into project directory
@@ -39,10 +39,6 @@ Change the user and password according to your database servers
 
 	Create new database and set 'NAME' : <database_name> -->
 
-```console
-sudo -u postgres psql -f ./setup.sql
-```
-
 ## Makemigrations and migrate
 
 ```python
@@ -54,4 +50,8 @@ python manage.py migrate
 
 ```python
 python manage.py runserver
+```
+## Create Super User
+```python
+python manage.py createsuperuser
 ```
